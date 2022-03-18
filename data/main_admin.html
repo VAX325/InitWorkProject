@@ -1,0 +1,218 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Главная страница (Администратор)</title>
+	
+	<style type="text/css">
+	TABLE {
+		border-collapse: collapse; /* Убираем двойные линии между ячейками */
+		width: 600px; /* Ширина таблицы */
+	}
+	TH, TD {
+		border: 1px solid black; /* Параметры рамки */
+		text-align: center; /* Выравнивание по центру */
+		padding: 4px; /* Поля вокруг текста */
+	}
+	TH {
+		background: #fff; /* Цвет фона ячейки */
+		height: 40px; /* Высота ячеек */
+		vertical-align: bottom; /* Выравнивание по нижнему краю */
+		padding: 0; /* Убираем поля вокруг текста */
+	}
+	form {
+		background: #fff;
+		padding: 5px;
+		color: black;
+		margin-right: auto;
+		margin-left: auto;
+		width: 100%;
+		display: grid;
+		justify-content: start;
+		align-items: center;
+		flex-direction: column;
+	}
+	form input {
+		text-align: center;
+		padding: 3px;
+		margin-bottom: 1px;
+		//margin-left: 40%;
+		width: 23%;
+		height: 15px;
+		border: 1px solid #000;
+		width: 150px;
+	}
+	</style>
+</head>
+<body>
+	<button id="showRequests">Заявления</button>
+	<button id="showSettings">Личный кабинет</button>
+	<button id="showAdminMenu">База Данных (Обновить)</button>
+	
+	<div id="settings-div" style="display:none;">
+    	<p>ФИО</p><input id="user_names">
+        <p>Дата рождения</p><input id="user_birthdate">
+        <p>Названия организации</p><input id="user_workname">
+        <p>Рабочая почта</p><input id="user_email">
+        <p>Логин</p><input id="user_login">
+        <p>Пароль</p><input id="user_password">
+	</div>
+	
+	<div id="requests-div" style="display:none;"></div>
+	
+	<div id="adminmenu-div" style="display:none;">
+		<!-- <form id="adminmenu-form-change"> -->
+			<!-- <input type="checkbox" id="adminmenu-form-change-true" onclick="DBChange(0)">Change</input> -->
+			<!-- <input type="checkbox" id="adminmenu-form-change-false" onclick="DBChange(1)">Create</input> -->
+		<!-- </form> -->
+	
+		<table id="adminmenu-table">
+			<tbody>
+			<!-- huh -->
+			</tbody>
+		</table>
+		
+		<!-- <form id="adminmenu-form-apply"> -->
+			<!-- ID:<input id="adminmenu-newusr-id"></input> -->
+			<!-- ADM:<input id="adminmenu-newusr-adm"></input> -->
+			<!-- DOB:<input id="adminmenu-newusr-dob"></input> -->
+			<!-- ORGNAME:<input id="adminmenu-newusr-orgname"></input> -->
+			<!-- POS:<input id="adminmenu-newusr-pos"></input> -->
+			<!-- EMAIL:<input id="adminmenu-newusr-email"></input> -->
+			<!-- LOGIN:<input id="adminmenu-newusr-login"></input> -->
+			<!-- PASS:<input id="adminmenu-newusr-password"></input> -->
+			
+			<!-- <button id="adminmenu-form-apply" onclick="DBApplyData">Apply</button> -->
+		<!-- </form> -->
+	</div>
+
+	<script language="javascript">
+		const requests = document.getElementById("requests-div")
+		const settings = document.getElementById("settings-div")
+		const admmenu = document.getElementById("adminmenu-div")
+		const showRequests = document.getElementById("showRequests")
+		const showSettings = document.getElementById("showSettings")
+		const showAdminMenu = document.getElementById("showAdminMenu")
+		
+		showRequests.addEventListener("click", () => {
+			requests.style.display = "block"
+			settings.style.display = "none"
+			admmenu.style.display = "none"
+		})
+		
+		showSettings.addEventListener("click", () => {
+			requests.style.display = "none"
+			settings.style.display = "block"
+			admmenu.style.display = "none"
+		})
+		
+		const admmenu_table = document.getElementById("adminmenu-table");
+		const admnenu_tbody = admmenu_table.getElementsByTagName("tbody")[0];
+		function ClearAdmnTable()
+		{
+			const rowCount = admmenu_table.rows.length;
+			while(admmenu_table.rows.length > 0) {
+				admmenu_table.deleteRow(0);
+			}
+			
+			const row = document.createElement("tr");
+			
+			const cell1 = document.createElement("th");
+			const cell2 = document.createElement("th");
+			const cell3 = document.createElement("th");
+			const cell4 = document.createElement("th");
+			const cell5 = document.createElement("th");
+			const cell6 = document.createElement("th");
+			const cell7 = document.createElement("th");
+			const cell8 = document.createElement("th");
+			
+			cell1.innerHTML = "ID";
+			cell2.innerHTML = "ADMIN";
+			cell3.innerHTML = "Date of birth";
+			cell4.innerHTML = "Org. name";
+			cell5.innerHTML = "Position";
+			cell6.innerHTML = "E-Mail";
+			cell7.innerHTML = "Login";
+			cell8.innerHTML = "Password";
+			
+			row.appendChild(cell1);
+			row.appendChild(cell2);
+			row.appendChild(cell3);
+			row.appendChild(cell4);
+			row.appendChild(cell5);
+			row.appendChild(cell6);
+			row.appendChild(cell7);
+			row.appendChild(cell8);
+			
+			admnenu_tbody.appendChild(row);
+		}
+		
+		function CreateUser(user)
+		{
+			const row = document.createElement("tr");
+			
+			const cell1 = document.createElement("td");
+			const cell2 = document.createElement("td");
+			const cell3 = document.createElement("td");
+			const cell4 = document.createElement("td");
+			const cell5 = document.createElement("td");
+			const cell6 = document.createElement("td");
+			const cell7 = document.createElement("td");
+			const cell8 = document.createElement("td");
+			
+			cell1.innerHTML = user.id;
+			cell2.innerHTML = user.adm;
+			cell3.innerHTML = user.dob;
+			cell4.innerHTML = user.orgname;
+			cell5.innerHTML = user.pos;
+			cell6.innerHTML = user.email;
+			cell7.innerHTML = user.login;
+			cell8.innerHTML = user.pass;
+			
+			row.appendChild(cell1);
+			row.appendChild(cell2);
+			row.appendChild(cell3);
+			row.appendChild(cell4);
+			row.appendChild(cell5);
+			row.appendChild(cell6);
+			row.appendChild(cell7);
+			row.appendChild(cell8);
+			
+			admnenu_tbody.appendChild(row);  
+		}
+		
+		function OnGetUsersData(response)
+		{
+			const array = JSON.parse(response).users
+			console.log(array)
+			
+			// Clearing table first
+			ClearAdmnTable()
+			
+			for(let i = 0; i < array.length; ++i)
+			{
+				CreateUser(array[i])
+			}
+		}
+		
+		showAdminMenu.addEventListener("click", () => {
+			requests.style.display = "none"
+			settings.style.display = "none"
+			admmenu.style.display = "block"
+			
+			httpGetAsync(window.location.href.concat('', '?GTUSRDATA=true'), OnGetUsersData)
+		})
+		
+		function httpGetAsync(theUrl, callback)
+		{
+			const xmlHttp = new XMLHttpRequest();
+			xmlHttp.onreadystatechange = function() {
+			if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+				callback(xmlHttp.responseText);
+			}
+			xmlHttp.open("GET", theUrl, true); // true for asynchronous
+			xmlHttp.send(null);
+		}
+	</script>
+</body>
+</html>

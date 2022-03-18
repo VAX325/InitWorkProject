@@ -1,0 +1,25 @@
+Data base structure
+
+TABLE RootDB:
+	column ID - Person ID
+	column ADM - Bool, marks Person as admin
+	column DOB - Date of Birth
+	column ORGNAME - Organisation Name
+	column POS - Position in Org.
+	column MAIL - E-mail
+	column LOG - Login
+	column PASS - Password
+	
+Steps of program init:
+1) Check for DB exists. If not - create
+2) If get request from user (login) - check login and pass. If valid - pass.
+3) If user is admin and changed some fields of Personal Data of some person, execute that changes
+4) On request for fields that needs for Statements - give needed fields
+5) On program shutdown - save & close DB
+
+Dev progress:
+1 Step) Done
+2 Step) Done
+3 Step) 
+4 Step) 
+5 Step) Done
