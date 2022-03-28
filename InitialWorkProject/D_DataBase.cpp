@@ -10,6 +10,7 @@ struct D_DataBase_Internal
 	char* err;
 };
 
+//Gets internal data
 #define GetInternalData static_cast<D_DataBase_Internal*>(D_InnerData)
 
 struct SQL_RETURN_STRUCT
@@ -25,6 +26,7 @@ D_DataBase::D_DataBase()
 
 	struct_mapping::reg(&D_UserData::ID, "id");
 	struct_mapping::reg(&D_UserData::Adm, "adm");
+	struct_mapping::reg(&D_UserData::Names, "names");
 	struct_mapping::reg(&D_UserData::DateOfBirth, "dob");
 	struct_mapping::reg(&D_UserData::OrgName, "orgname");
 	struct_mapping::reg(&D_UserData::Position, "pos");
@@ -58,6 +60,7 @@ bool D_DataBase::D_Open(const char* db_name)
 		"CREATE TABLE IF NOT EXISTS RootDB(\
 		ID INTEGER PRIMARY KEY UNIQUE,\
 		ADM INTEGER NOT NULL,\
+		NAMES TEXT NOT NULL,\
 		DOB TEXT NOT NULL,\
 		ORGNAME TEXT NOT NULL,\
 		POS TEXT NOT NULL,\
@@ -71,15 +74,15 @@ bool D_DataBase::D_Open(const char* db_name)
 	{
 		//Create admin
 		D_Exec(
-			"INSERT INTO RootDB (ID, ADM, DOB, ORGNAME, POS, MAIL, LOG, PASS)\
-			VALUES (0, 1, 'ADMIN', 'Satelite Softlabs', 'SYS ADM', 'ADMIN', 'admin', 'admin')\
+			"INSERT INTO RootDB (ID, ADM, NAMES, DOB, ORGNAME, POS, MAIL, LOG, PASS)\
+			VALUES (0, 1, 'ADMIN ADMIN ADMIN', 'ADMIN', 'Satelite Softlabs', 'SYS ADM', 'ADMIN', 'admin', 'admin')\
 			"
 		);
 
 		//Create test
 		D_Exec(
-			"INSERT INTO RootDB (ID, ADM, DOB, ORGNAME, POS, MAIL, LOG, PASS)\
-			VALUES (1, 0, 'TEST', 'Satelite Softlabs', 'SYS TST', 'TEST', 'test', 'test')\
+			"INSERT INTO RootDB (ID, ADM, NAMES, DOB, ORGNAME, POS, MAIL, LOG, PASS)\
+			VALUES (1, 0, 'TEST TEST TEST', 'TEST', 'Satelite Softlabs', 'SYS TST', 'TEST', 'test', 'test')\
 			"
 		);
 	}
@@ -132,12 +135,14 @@ void* D_DataBase::D_Exec(const char* REQUEST)
 }
 
 #include <cstdarg>
-static const char* format(const char* format, ...)
+extern const char* format(const char* format, ...)
 {
-	char* Buff = (char*)malloc(512);
+	size_t size = strlen(format) + 512;
+
+	char* Buff = (char*)malloc(size);
 	va_list va;
 	va_start(va, format);
-	vsnprintf(Buff, 512, format, va);
+	vsnprintf(Buff, size, format, va);
 	va_end(va);
 
 	return Buff;
@@ -169,6 +174,7 @@ int D_DataBase::D_UserAuthNew(const char* login, const char* pass)
 		LOG(CoreToolkit::LogError) << "BLYAT";
 	}
 
+	free((void*)buff);
 	return -1;
 }
 
@@ -244,13 +250,14 @@ size_t D_DataBase::D_GetAllUsers(D_UserData*& users)
 				users[i] = { 0 };
 				users[i].ID = atoi(sql_return->columns_data[curr_user_shift].c_str());
 				users[i].Adm = atoi(sql_return->columns_data[curr_user_shift + 1].c_str());
-				users[i].DateOfBirth = sql_return->columns_data[curr_user_shift + 2];
-				users[i].OrgName = sql_return->columns_data[curr_user_shift + 3];
-				users[i].Position = sql_return->columns_data[curr_user_shift + 4];
-				users[i].E_Mail = sql_return->columns_data[curr_user_shift + 5];
-				users[i].Login = sql_return->columns_data[curr_user_shift + 6];
-				users[i].Password = sql_return->columns_data[curr_user_shift + 7];
-				curr_user_shift += 8;
+				users[i].Names = sql_return->columns_data[curr_user_shift + 2];
+				users[i].DateOfBirth = sql_return->columns_data[curr_user_shift + 3];
+				users[i].OrgName = sql_return->columns_data[curr_user_shift + 4];
+				users[i].Position = sql_return->columns_data[curr_user_shift + 5];
+				users[i].E_Mail = sql_return->columns_data[curr_user_shift + 6];
+				users[i].Login = sql_return->columns_data[curr_user_shift + 7];
+				users[i].Password = sql_return->columns_data[curr_user_shift + 8];
+				curr_user_shift += 9;
 			}
 
 			return user_count;
@@ -258,7 +265,7 @@ size_t D_DataBase::D_GetAllUsers(D_UserData*& users)
 	}
 	else
 	{
-		LOG(CoreToolkit::LogError) << "BLYAT";
+		LOG(CoreToolkit::LogError) << "ERROR WHILE SEARCHG ALL USERS";
 	}
 
 	return 0;

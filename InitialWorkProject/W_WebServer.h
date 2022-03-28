@@ -5,8 +5,8 @@
 enum class W_PAGES : int
 {
 	LOGIN,
-	MAIN,
-	MAIN_ADMIN,
+	INDEX,
+	INDEX_ADMIN,
 };
 
 class W_WebServer final : public WebToolkit::HttpHandler
@@ -25,7 +25,8 @@ private:
 	WebToolkit::URIDispatcher dispatcher;
 
 	void Login(WebToolkit::HttpServerContext* context);
-	void Main(WebToolkit::HttpServerContext* context);
+	void Index(WebToolkit::HttpServerContext* context);
+	void ChangeData(WebToolkit::HttpServerContext* context);
 
 	/*std::map<std::string, W_WebClient> clients;*/
 };

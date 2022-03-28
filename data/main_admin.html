@@ -1,66 +1,39 @@
 <!doctype html>
 <html>
 <head>
+	<link rel="stylesheet" type="text/css" href="data/main.css" />
 	<meta charset="utf-8">
 	<title>Главная страница (Администратор)</title>
-	
-	<style type="text/css">
-	TABLE {
-		border-collapse: collapse; /* Убираем двойные линии между ячейками */
-		width: 600px; /* Ширина таблицы */
-	}
-	TH, TD {
-		border: 1px solid black; /* Параметры рамки */
-		text-align: center; /* Выравнивание по центру */
-		padding: 4px; /* Поля вокруг текста */
-	}
-	TH {
-		background: #fff; /* Цвет фона ячейки */
-		height: 40px; /* Высота ячеек */
-		vertical-align: bottom; /* Выравнивание по нижнему краю */
-		padding: 0; /* Убираем поля вокруг текста */
-	}
-	form {
-		background: #fff;
-		padding: 5px;
-		color: black;
-		margin-right: auto;
-		margin-left: auto;
-		width: 100%;
-		display: grid;
-		justify-content: start;
-		align-items: center;
-		flex-direction: column;
-	}
-	form input {
-		text-align: center;
-		padding: 3px;
-		margin-bottom: 1px;
-		//margin-left: 40%;
-		width: 23%;
-		height: 15px;
-		border: 1px solid #000;
-		width: 150px;
-	}
-	</style>
 </head>
 <body>
 	<button id="showRequests">Заявления</button>
 	<button id="showSettings">Личный кабинет</button>
 	<button id="showAdminMenu">База Данных (Обновить)</button>
 	
-	<div id="settings-div" style="display:none;">
-    	<p>ФИО</p><input id="user_names">
-        <p>Дата рождения</p><input id="user_birthdate">
-        <p>Названия организации</p><input id="user_workname">
-        <p>Рабочая почта</p><input id="user_email">
-        <p>Логин</p><input id="user_login">
-        <p>Пароль</p><input id="user_password">
+	<div id="settings-div" style="%s">
+		<form id="settings-data-form" enctype="multipart/form-data" method="post" action="/change_data">
+			<select id="settings-data-form-user-select">
+				<option selected value="0">ADMIN</option>
+				<option value="1">check2</option>
+				<option value="2">check3</option>
+				<option value="3">check4</option>
+			</select>
+		
+			<p>ФИО</p><input id="user_names" name="user_names" type="text">
+			<p>Дата рождения</p><input id="user_birthdate" name="user_birthdate" type="text">
+			<p>Названия организации</p><input id="user_workname" name="user_workname" type="text">
+			<p>Рабочая почта</p><input id="user_email" name="user_email" type="text">
+			<p>Логин</p><input id="user_login" name="user_login" type="text">
+			<p>Пароль</p><input id="user_password" name="user_password" type="text">
+			
+			<input id="settings-data-from-push" type="submit" value="Push changed data">  <!--id="settings-data-from-push">Push changed data</button> -->
+		</form>
+		<button id="settings-data-from-update">Update data</button>
 	</div>
 	
-	<div id="requests-div" style="display:none;"></div>
+	<div id="requests-div" style="%s"></div>
 	
-	<div id="adminmenu-div" style="display:none;">
+	<div id="adminmenu-div" style="%s">
 		<!-- <form id="adminmenu-form-change"> -->
 			<!-- <input type="checkbox" id="adminmenu-form-change-true" onclick="DBChange(0)">Change</input> -->
 			<!-- <input type="checkbox" id="adminmenu-form-change-false" onclick="DBChange(1)">Create</input> -->
@@ -125,15 +98,17 @@
 			const cell6 = document.createElement("th");
 			const cell7 = document.createElement("th");
 			const cell8 = document.createElement("th");
+			const cell9 = document.createElement("th");
 			
 			cell1.innerHTML = "ID";
 			cell2.innerHTML = "ADMIN";
-			cell3.innerHTML = "Date of birth";
-			cell4.innerHTML = "Org. name";
-			cell5.innerHTML = "Position";
-			cell6.innerHTML = "E-Mail";
-			cell7.innerHTML = "Login";
-			cell8.innerHTML = "Password";
+			cell3.innerHTML = "NAMES";
+			cell4.innerHTML = "Date of birth";
+			cell5.innerHTML = "Org. name";
+			cell6.innerHTML = "Position";
+			cell7.innerHTML = "E-Mail";
+			cell8.innerHTML = "Login";
+			cell9.innerHTML = "Password";
 			
 			row.appendChild(cell1);
 			row.appendChild(cell2);
@@ -143,6 +118,7 @@
 			row.appendChild(cell6);
 			row.appendChild(cell7);
 			row.appendChild(cell8);
+			row.appendChild(cell9);
 			
 			admnenu_tbody.appendChild(row);
 		}
@@ -159,15 +135,17 @@
 			const cell6 = document.createElement("td");
 			const cell7 = document.createElement("td");
 			const cell8 = document.createElement("td");
+			const cell9 = document.createElement("td");
 			
 			cell1.innerHTML = user.id;
 			cell2.innerHTML = user.adm;
-			cell3.innerHTML = user.dob;
-			cell4.innerHTML = user.orgname;
-			cell5.innerHTML = user.pos;
-			cell6.innerHTML = user.email;
-			cell7.innerHTML = user.login;
-			cell8.innerHTML = user.pass;
+			cell3.innerHTML = user.names;
+			cell4.innerHTML = user.dob;
+			cell5.innerHTML = user.orgname;
+			cell6.innerHTML = user.pos;
+			cell7.innerHTML = user.email;
+			cell8.innerHTML = user.login;
+			cell9.innerHTML = user.pass;
 			
 			row.appendChild(cell1);
 			row.appendChild(cell2);
@@ -177,6 +155,7 @@
 			row.appendChild(cell6);
 			row.appendChild(cell7);
 			row.appendChild(cell8);
+			row.appendChild(cell9);
 			
 			admnenu_tbody.appendChild(row);  
 		}
@@ -203,6 +182,19 @@
 			httpGetAsync(window.location.href.concat('', '?GTUSRDATA=true'), OnGetUsersData)
 		})
 		
+		function httpPostAsync(theURL, data, callback, encrypt)
+		{
+			const xmlHttp = new XMLHttpRequest();
+			xmlHttp.onreadystatechange = function() {
+				if (xmlHttp.readyState == 4 && xmlHttp.status == 200){
+					callback(xmlHttp.responseText);
+				}
+			}
+			xmlHttp.open("POST", theURL, true); // true for asynchronous
+			xmlHttp.setRequestHeader('Content-Type', encrypt);
+			xmlHttp.send(data);
+		}
+		
 		function httpGetAsync(theUrl, callback)
 		{
 			const xmlHttp = new XMLHttpRequest();
@@ -213,6 +205,72 @@
 			xmlHttp.open("GET", theUrl, true); // true for asynchronous
 			xmlHttp.send(null);
 		}
+		
+		const user_selector = document.getElementById("settings-data-form-user-select");
+		let curr_usr = 0;
+		
+		const settings_form_names = document.getElementById("user_names")
+		const settings_form_birthdate = document.getElementById("user_birthdate")
+		const settings_form_workname = document.getElementById("user_workname")
+		const settings_form_email = document.getElementById("user_email")
+		const settings_form_login = document.getElementById("user_login")
+		const settings_form_password = document.getElementById("user_password")
+		
+		function OnGetConcreteUserData(response)
+		{
+			const users = JSON.parse(response).users
+			
+			settings_form_names.value = users[0].names;
+			settings_form_birthdate.value = users[0].dob;
+			settings_form_workname.value = users[0].orgname;
+			settings_form_email.value = users[0].email;
+			settings_form_login.value = users[0].login;
+			settings_form_password.value = users[0].pass;
+		}
+		
+		const updateUserdata = document.getElementById("settings-data-from-update")
+		updateUserdata.addEventListener("click", () => {
+			const strUser = user_selector.value;
+			let data_tosend = window.location.href.concat('', '?GTCONUSRDATA=' + strUser);
+			
+			httpGetAsync(data_tosend, OnGetConcreteUserData)
+			
+			curr_usr = user_selector.value;
+		})
+		
+		function finall(response)
+		{
+			console.log("huray!")
+		}
+		
+		<!-- const pushUserdata = document.getElementById("settings-data-from-push") -->
+		<!-- pushUserdata.addEventListener("click", () => { -->
+			<!-- const strUser = user_selector.value; -->
+			<!-- let data_tosend = '/change_data' //window.location.host.concat('', ); // + strUser -->
+			
+			<!-- let user =  -->
+			<!-- { -->
+				<!-- names: settings_form_names.value, -->
+				<!-- dob: settings_form_birthdate.value, -->
+				<!-- orgname: settings_form_workname.value, -->
+				<!-- email: settings_form_email.value, -->
+				<!-- login: settings_form_login.value, -->
+				<!-- pass: settings_form_password.value -->
+			<!-- } -->
+			<!-- console.log(user) -->
+			
+			<!-- let feed = JSON.stringify(user) -->
+			
+			<!-- console.log(user) -->
+			
+			<!-- let data = []; -->
+			<!-- data.push(feed); -->
+			
+			<!-- //<form enctype="multipart/form-data" method="post" action="/post"> -->
+			
+			<!-- console.log(feed) -->
+			<!-- httpPostAsync(data_tosend, feed, finall, "multipart/form-data") -->
+		<!-- }) -->
 	</script>
 </body>
 </html>

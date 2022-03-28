@@ -1,0 +1,45 @@
+TABLE 
+{
+	border-collapse: collapse; /* Убираем двойные линии между ячейками */
+	width: 600px; /* Ширина таблицы */
+}
+
+TH, TD 
+{
+	border: 1px solid black; /* Параметры рамки */
+	text-align: center; /* Выравнивание по центру */
+	padding: 4px; /* Поля вокруг текста */
+}
+
+TH 
+{
+	background: #fff; /* Цвет фона ячейки */
+	height: 40px; /* Высота ячеек */
+	vertical-align: bottom; /* Выравнивание по нижнему краю */
+	padding: 0; /* Убираем поля вокруг текста */
+}
+
+form 
+{
+	background: #fff;
+	padding: 5px;
+	color: black;
+	margin-right: auto;
+	margin-left: auto;
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
+form input {
+	text-align: center;
+	padding: 3px;
+	margin-bottom: 1px;
+	//margin-left: 40%;
+	width: 23%;
+	height: 25px;
+	border: 1px solid #000;
+	width: 150px;
+}

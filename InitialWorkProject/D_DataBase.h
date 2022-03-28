@@ -7,6 +7,7 @@ struct D_UserData final
 	int ID;
 	int Adm;
 
+	std::string Names;
 	std::string DateOfBirth;
 	std::string OrgName;
 	std::string Position;
