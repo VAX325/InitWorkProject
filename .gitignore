@@ -401,3 +401,5 @@ Debug-x64/
 *.sqlitedb
 
 !Libs/bin/
+
+out/

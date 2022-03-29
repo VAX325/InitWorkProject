@@ -41,8 +41,6 @@ public:
 	Retruns 2 if user is admin
 	*/
 	int D_UserAuthNew(const char* login, const char* pass);
-	//Do not use, only as history
-	int D_UserAuth(const char* login, const char* pass);
 
 	//Only admin access
 	size_t D_GetAllUsers(D_UserData*& users);

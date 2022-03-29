@@ -27,8 +27,6 @@ private:
 	void Login(WebToolkit::HttpServerContext* context);
 	void Index(WebToolkit::HttpServerContext* context);
 	void ChangeData(WebToolkit::HttpServerContext* context);
-
-	/*std::map<std::string, W_WebClient> clients;*/
 };
 
 #endif

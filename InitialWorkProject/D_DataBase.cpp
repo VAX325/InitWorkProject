@@ -178,54 +178,6 @@ int D_DataBase::D_UserAuthNew(const char* login, const char* pass)
 	return -1;
 }
 
-int D_DataBase::D_UserAuth(const char* login, const char* pass)
-{
-#pragma deprecated("USE D_UserAuthNew")
-	sqlite3_stmt* statement;
-	int rc = sqlite3_prepare(GetInternalData->D_db, "SELECT LOG, PASS, ADM FROM RootDB", -1, &statement, 0);
-
-	if (rc != SQLITE_OK)
-	{
-		LOG(CoreToolkit::LogError) << "Can't prepare for requests! Reason: " << sqlite3_errmsg(GetInternalData->D_db);
-		return -1;
-	}
-
-	rc = sqlite3_step(statement);
-	int ncols = sqlite3_column_count(statement);
-
-	while(rc == SQLITE_ROW)
-	{
-		if (ncols != 3)
-		{
-			sqlite3_finalize(statement);
-			return -1;
-		}
-
-		const unsigned char* _login = sqlite3_column_text(statement, 0);
-		if (strcmp(reinterpret_cast<const char*>(_login), login) == 0)
-		{
-			const unsigned char* _pass = sqlite3_column_text(statement, 1);
-			if (strcmp(reinterpret_cast<const char*>(_pass), pass) == 0)
-			{
-				const unsigned char* adm = sqlite3_column_text(statement, 2);
-				int is_user_adm = atoi(reinterpret_cast<const char*>(adm));
-				sqlite3_finalize(statement);
-				return 1 + is_user_adm;
-			}
-			else
-			{
-				sqlite3_finalize(statement);
-				return 0;
-			}
-		}
-
-		rc = sqlite3_step(statement);
-	}
-	sqlite3_finalize(statement);
-
-	return 0;
-}
-
 size_t D_DataBase::D_GetAllUsers(D_UserData*& users)
 {
 	const char* buff = "SELECT * FROM RootDB";

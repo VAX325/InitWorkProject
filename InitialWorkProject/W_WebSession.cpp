@@ -10,4 +10,6 @@ W_WebSession::W_WebSession()
 
 	curr_page = 0;
 	last_page = 0;
+
+	open_page = -1;
 }

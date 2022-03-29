@@ -15,6 +15,8 @@ public:
 
 	int curr_page;
 	int last_page;
+
+	int open_page;
 };
 
 #endif

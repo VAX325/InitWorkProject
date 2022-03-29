@@ -162,22 +162,35 @@ void W_WebServer::Index(WebToolkit::HttpServerContext* context)
 		const char* RequestsOpen = "display:none;";
 		const char* DBOpen = "display:none;";
 
-		auto it = context->parameters.find("OPENLK");
-		if (it != context->parameters.end())
+		switch (sessionObj->open_page)
 		{
+		case 0:
 			LKOpen = "display:block;";
 			RequestsOpen = "display:none;";
 			DBOpen = "display:none;";
+			break;
+		case 1:
+			LKOpen = "display:none;";
+			RequestsOpen = "display:block;";
+			DBOpen = "display:none;";
+			break;
+		case 2:
+			LKOpen = "display:none;";
+			RequestsOpen = "display:none;";
+			DBOpen = "display:block;";
+			break;
+		default:
+			LKOpen = "display:none;";
+			RequestsOpen = "display:none;";
+			DBOpen = "display:none;";
+			break;
 		}
 
 		return_page = format(return_page.c_str(), LKOpen, RequestsOpen, DBOpen);
 
-		if (!sessionObj->is_admin)
+		if(sessionObj->is_admin)
 		{
-			//context->responseBody << U_GetPageByEnum(W_PAGES::INDEX);
-		}
-		else
-		{
+			//Get all user data
 			{
 				auto it = context->parameters.find("GTUSRDATA");
 				if (it != context->parameters.end())
@@ -208,6 +221,7 @@ void W_WebServer::Index(WebToolkit::HttpServerContext* context)
 				}
 
 			}
+			//Get concrete user data (need rework)
 			{
 				auto it = context->parameters.find("GTCONUSRDATA");
 				if (it != context->parameters.end())
@@ -262,7 +276,8 @@ void W_WebServer::ChangeData(WebToolkit::HttpServerContext* context)
 			LOG(LogVerbose) << "Admin is requesting change of user data";
 		}
 
-		context->Redirect("/index?OPENLK=true");
+		sessionObj->open_page = 0; //For lk
+		context->Redirect("/index");
 	}
 	else
 	{
