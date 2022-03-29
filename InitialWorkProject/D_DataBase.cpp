@@ -38,7 +38,7 @@ D_DataBase::D_DataBase()
 D_DataBase::~D_DataBase()
 {
 	D_Close();
-	delete D_InnerData;
+	delete (D_DataBase_Internal*)D_InnerData;
 }
 
 bool D_DataBase::D_Open(const char* db_name)

@@ -13,8 +13,14 @@
 #include <WebToolkit/WebToolkit.h>
 
 #include <string>
+#include <string.h>
 #include <vector>
 #include <map>
 #include <iostream>
+
+
+#if __cplusplus < 201703L && !WIN32
+#error("C++ Standard need at least 17")
+#endif
 
 #endif
