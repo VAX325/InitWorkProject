@@ -21,4 +21,6 @@ private:
 	const char* cwd;
 };
 
+const char* U_GetCWD();
+
 #endif

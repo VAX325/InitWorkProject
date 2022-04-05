@@ -1,10 +1,6 @@
 #include "P_HEADER.h"
 #include "U_DataParser.h"
 
-#ifdef _WIN32
-#include <direct.h>
-#endif
-
 U_DataParser* U_DataParser::U_parser = nullptr;
 
 U_DataParser* U_DataParser::DataParser()
@@ -16,11 +12,7 @@ U_DataParser* U_DataParser::DataParser()
 
 U_DataParser::U_DataParser()
 {
-#ifdef _WIN32
-	cwd = _getcwd(0, 0);
-#else
-	cwd = "none"; //Get current work dir on linux/os x
-#endif
+	cwd = U_GetCWD();
 }
 
 const char* U_DataParser::GetLoginPage()
@@ -57,4 +49,25 @@ const char* U_DataParser::GetMainAdminPage()
 	strcpy((char*)file_data, file_data_str.c_str());
 
 	return file_data;
+}
+
+#if WIN32
+#include <direct.h>
+#else
+#include <unistd.h>
+#endif
+
+const char* U_GetCWD()
+{
+#ifdef _WIN32
+	return _getcwd(0, 0);
+#else
+	char cwd[PATH_MAX];
+	if (getcwd(cwd, sizeof(cwd)) != NULL) 
+	{
+		return cwd;
+	}
+
+	return "";
+#endif
 }

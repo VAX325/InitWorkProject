@@ -15,7 +15,7 @@ struct D_DataBase_Internal
 
 struct SQL_RETURN_STRUCT
 {
-	int colums;
+	int colums = 0;
 	std::vector<std::string> columns_data;
 	std::vector<std::string> columns_result;
 };
@@ -33,6 +33,9 @@ D_DataBase::D_DataBase()
 	struct_mapping::reg(&D_UserData::E_Mail, "email");
 	struct_mapping::reg(&D_UserData::Login, "login");
 	struct_mapping::reg(&D_UserData::Password, "pass");
+
+	struct_mapping::reg(&D_UserSelectData::ID, "id");
+	struct_mapping::reg(&D_UserSelectData::Names, "names");
 }
 
 D_DataBase::~D_DataBase()
@@ -134,6 +137,7 @@ void* D_DataBase::D_Exec(const char* REQUEST)
 	return obj;
 }
 
+#include <assert.h>
 #include <cstdarg>
 extern const char* format(const char* format, ...)
 {
@@ -144,6 +148,17 @@ extern const char* format(const char* format, ...)
 	va_start(va, format);
 	vsnprintf(Buff, size, format, va);
 	va_end(va);
+
+	assert(Buff && "MALLOC ERROR!");
+
+	const size_t str_size = strlen(Buff);
+	//Buff = (char*)realloc(Buff, str_size);
+	//Buff[str_size] = '\0';
+	void* buff_ptr = realloc(Buff, str_size);
+	assert(buff_ptr && "REALOC ERROR!");
+
+	Buff = (char*)buff_ptr;
+	Buff[str_size] = '\0';
 
 	return Buff;
 }
@@ -221,4 +236,101 @@ size_t D_DataBase::D_GetAllUsers(D_UserData*& users)
 	}
 
 	return 0;
+}
+
+size_t D_DataBase::D_GetUsersForList(D_UserSelectData*& users)
+{
+	const char* buff = "SELECT ID, NAMES FROM RootDB";
+	const int colums_count = 2;
+
+	SQL_RETURN_STRUCT* sql_return = (SQL_RETURN_STRUCT*)D_Exec(buff);
+	if (sql_return)
+	{
+		if (sql_return->colums <= 0)
+		{
+			return 0;
+		}
+		else
+		{
+			users = new D_UserSelectData[sql_return->colums];
+			using size = std::vector<std::string, std::allocator<std::string>>::size_type;
+
+			size curr_user_shift = 0;
+			const int user_count = static_cast<size>((sql_return->colums / colums_count) + 1);
+			for (size i = 0; i != user_count; i++)
+			{
+				users[i] = { 0 };
+				users[i].ID = atoi(sql_return->columns_data[curr_user_shift].c_str());
+				users[i].Names = sql_return->columns_data[curr_user_shift + 1];
+				curr_user_shift += 2;
+			}
+
+			return user_count;
+		}
+	}
+	else
+	{
+		LOG(CoreToolkit::LogError) << "ERROR WHILE SEARCHG ALL USERS";
+	}
+
+	return 0;
+}
+
+D_UserData D_DataBase::D_GetUserByID(int id)
+{
+	const char* buff = format("SELECT * FROM RootDB\
+						WHERE ID = %i", id);
+	const int colums_count = 8;
+
+	SQL_RETURN_STRUCT* sql_return = (SQL_RETURN_STRUCT*)D_Exec(buff);
+	if (sql_return)
+	{
+		if (sql_return->colums <= 0)
+		{
+			return D_UserData();
+		}
+		else
+		{
+			D_UserData user{};
+			user.ID = atoi(sql_return->columns_data[0].c_str());
+			user.Adm = atoi(sql_return->columns_data[1].c_str());
+			user.Names = sql_return->columns_data[2];
+			user.DateOfBirth = sql_return->columns_data[3];
+			user.OrgName = sql_return->columns_data[4];
+			user.Position = sql_return->columns_data[5];
+			user.E_Mail = sql_return->columns_data[6];
+			user.Login = sql_return->columns_data[7];
+			user.Password = sql_return->columns_data[8];
+
+			return user;
+		}
+	}
+
+	return D_UserData();
+}
+
+void D_DataBase::D_ChangeUserDataById(int id, std::vector<std::string> user_data)
+{
+	const char* buff = format("UPDATE RootDB\
+						SET DOB = \"%s\", \
+							ORGNAME = \"%s\",\
+							POS = \"%s\",\
+							NAMES = \"%s\",\
+							MAIL = \"%s\",\
+							LOG = \"%s\",\
+							PASS = \"%s\"\
+						WHERE ID = %i", user_data[0].c_str(), 
+		user_data[1].c_str(), 
+		user_data[2].c_str(), 
+		user_data[3].c_str(), 
+		user_data[4].c_str(), 
+		user_data[5].c_str(), 
+		user_data[6].c_str(), 
+		id);
+
+	SQL_RETURN_STRUCT* sql_return = (SQL_RETURN_STRUCT*)D_Exec(buff);
+	if (sql_return)
+	{
+
+	}
 }

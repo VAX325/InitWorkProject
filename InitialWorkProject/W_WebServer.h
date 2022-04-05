@@ -2,6 +2,8 @@
 #ifndef WEBSERVER_H
 #define WEBSERVER_H
 
+#include "W_WebDispatcher.h"
+
 enum class W_PAGES : int
 {
 	LOGIN,
@@ -18,11 +20,11 @@ public:
 	void Run();
 	void Stop();
 
-	void Handle(WebToolkit::HttpServerContext* cntx) {}
+	void Handle(WebToolkit::HttpServerContext* context);
 
 private:
 	WebToolkit::Server* server;
-	WebToolkit::URIDispatcher dispatcher;
+	W_WebDispatcher dispatcher;
 
 	void Login(WebToolkit::HttpServerContext* context);
 	void Index(WebToolkit::HttpServerContext* context);

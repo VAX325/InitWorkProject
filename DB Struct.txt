@@ -3,6 +3,7 @@ Data base structure
 TABLE RootDB:
 	column ID - Person ID
 	column ADM - Bool, marks Person as admin
+	column NAMES - Person names
 	column DOB - Date of Birth
 	column ORGNAME - Organisation Name
 	column POS - Position in Org.
@@ -20,6 +21,6 @@ Steps of program init:
 Dev progress:
 1 Step) Done
 2 Step) Done
-3 Step) 
+3 Step) Done
 4 Step) 
 5 Step) Done

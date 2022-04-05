@@ -10,12 +10,23 @@ include_directories(${CMAKE_SOURCE_DIR}/Libs/include/WebToolkit)
 link_directories(${CMAKE_SOURCE_DIR}/Libs/lib)
 link_directories(${CMAKE_SOURCE_DIR}/Libs/bin)
 
-file(GLOB HeaderFiles
-    "*.h"
+set(HeaderFiles
+    "D_DataBase.h"
+    "P_HEADER.h"
+    "U_DataParser.h"
+    "W_WebDispatcher.h"
+    "W_WebServer.h"
+    "W_WebSession.h"
 )
 
-file(GLOB SourceFiles
-     "*.cpp"
+set(SourceFiles
+     "D_DataBase.cpp"
+     "P_HEADER.cpp"
+     "U_DataParser.cpp"
+     "U_Main.cpp"
+     "W_WebDispatcher.cpp"
+     "W_WebServer.cpp"
+     "W_WebSession.cpp"
 )
 
 set_source_files_properties(${SourceFiles} PROPERTIES LANGUAGE CXX )

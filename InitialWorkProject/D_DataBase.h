@@ -17,6 +17,12 @@ struct D_UserData final
 	std::string Password;
 };
 
+struct D_UserSelectData final
+{
+	int ID;
+	std::string Names;
+};
+
 class D_DataBase final
 {
 public:
@@ -44,7 +50,11 @@ public:
 
 	//Only admin access
 	size_t D_GetAllUsers(D_UserData*& users);
+	size_t D_GetUsersForList(D_UserSelectData*& users);
 
+	D_UserData D_GetUserByID(int id);
+
+	void D_ChangeUserDataById(int id, std::vector<std::string> user_data);
 private:
 	static D_DataBase* D_database;
 	

@@ -12,23 +12,21 @@
 	
 	<div id="settings-div" style="%s">
 		<form id="settings-data-form" enctype="multipart/form-data" method="post" action="/change_data">
-			<select id="settings-data-form-user-select">
-				<option selected value="0">ADMIN</option>
-				<option value="1">check2</option>
-				<option value="2">check3</option>
-				<option value="3">check4</option>
+			<select id="settings-data-form-user-select" onchange="UpdateUserSettings()">
+				<option value="0">ADMIN</option>
 			</select>
-		
+
 			<p>ФИО</p><input id="user_names" name="user_names" type="text">
 			<p>Дата рождения</p><input id="user_birthdate" name="user_birthdate" type="text">
 			<p>Названия организации</p><input id="user_workname" name="user_workname" type="text">
+			<p>Должность</p><input id="user_position" name="user_position" type="text">
 			<p>Рабочая почта</p><input id="user_email" name="user_email" type="text">
 			<p>Логин</p><input id="user_login" name="user_login" type="text">
 			<p>Пароль</p><input id="user_password" name="user_password" type="text">
-			
+
 			<input id="settings-data-from-push" type="submit" value="Push changed data">  <!--id="settings-data-from-push">Push changed data</button> -->
 		</form>
-		<button id="settings-data-from-update">Update data</button>
+		<!--<button id="settings-data-from-update">Update data</button>-->
 	</div>
 	
 	<div id="requests-div" style="%s"></div>
@@ -60,6 +58,11 @@
 	</div>
 
 	<script language="javascript">
+        window.onload = function () {
+			UpdateUserList();
+            UpdateUserSettings();
+        };
+
 		const requests = document.getElementById("requests-div")
 		const settings = document.getElementById("settings-div")
 		const admmenu = document.getElementById("adminmenu-div")
@@ -72,11 +75,55 @@
 			settings.style.display = "none"
 			admmenu.style.display = "none"
 		})
-		
+
+		function UpdateUserSettings()
+		{
+            const strUser = user_selector.value;
+			let data_tosend = window.location.href.concat('', '?GTCONUSRDATA=' + strUser);
+
+			httpGetAsync(data_tosend, OnGetConcreteUserData)
+
+			curr_usr = user_selector.value;
+		}
+
+        const settings_select = document.getElementById("settings-data-form-user-select");
+		function UpdateUserListCallback(response)
+		{
+            const array = JSON.parse(response).users
+			console.log(array)
+
+            var i, L = settings_select.options.length - 1;
+			for (i = L; i >= 0; i--)
+			{
+                settings_select.remove(i);
+			}
+
+			for (var i = 0; i <= array.length - 1; i++)
+			{
+                var opt = document.createElement('option');
+				opt.value = i;
+                opt.innerHTML = array[i].names;
+                settings_select.appendChild(opt);
+            }
+		}
+
+		function UpdateUserList()
+		{
+            const strUser = user_selector.value;
+            let data_tosend = window.location.href.concat('', '?UPDUSRS=true');
+
+            httpGetAsync(data_tosend, UpdateUserListCallback)
+
+            curr_usr = user_selector.value;
+		}
+
 		showSettings.addEventListener("click", () => {
 			requests.style.display = "none"
 			settings.style.display = "block"
 			admmenu.style.display = "none"
+
+			UpdateUserList();
+			UpdateUserSettings();
 		})
 		
 		const admmenu_table = document.getElementById("adminmenu-table");
@@ -163,7 +210,6 @@
 		function OnGetUsersData(response)
 		{
 			const array = JSON.parse(response).users
-			console.log(array)
 			
 			// Clearing table first
 			ClearAdmnTable()
@@ -212,6 +258,7 @@
 		const settings_form_names = document.getElementById("user_names")
 		const settings_form_birthdate = document.getElementById("user_birthdate")
 		const settings_form_workname = document.getElementById("user_workname")
+        const settings_form_position = document.getElementById("user_position")
 		const settings_form_email = document.getElementById("user_email")
 		const settings_form_login = document.getElementById("user_login")
 		const settings_form_password = document.getElementById("user_password")
@@ -219,58 +266,60 @@
 		function OnGetConcreteUserData(response)
 		{
 			const users = JSON.parse(response).users
-			
+			console.log(users[0]);
+
 			settings_form_names.value = users[0].names;
 			settings_form_birthdate.value = users[0].dob;
 			settings_form_workname.value = users[0].orgname;
+			settings_form_position.value = users[0].pos;
 			settings_form_email.value = users[0].email;
 			settings_form_login.value = users[0].login;
 			settings_form_password.value = users[0].pass;
 		}
 		
-		const updateUserdata = document.getElementById("settings-data-from-update")
-		updateUserdata.addEventListener("click", () => {
-			const strUser = user_selector.value;
-			let data_tosend = window.location.href.concat('', '?GTCONUSRDATA=' + strUser);
+		//const updateUserdata = document.getElementById("settings-data-from-update")
+		//updateUserdata.addEventListener("click", () => {
+		//	const strUser = user_selector.value;
+		//	let data_tosend = window.location.href.concat('', '?GTCONUSRDATA=' + strUser);
 			
-			httpGetAsync(data_tosend, OnGetConcreteUserData)
+		//	httpGetAsync(data_tosend, OnGetConcreteUserData)
 			
-			curr_usr = user_selector.value;
-		})
+		//	curr_usr = user_selector.value;
+		//})
 		
 		function finall(response)
 		{
 			console.log("huray!")
 		}
 		
-		<!-- const pushUserdata = document.getElementById("settings-data-from-push") -->
-		<!-- pushUserdata.addEventListener("click", () => { -->
-			<!-- const strUser = user_selector.value; -->
-			<!-- let data_tosend = '/change_data' //window.location.host.concat('', ); // + strUser -->
+		//const pushUserdata = document.getElementById("settings-data-from-push")
+		//pushUserdata.addEventListener("click", () => {
+		//	const strUser = user_selector.value;
+		//	let data_tosend = '/change_data' //window.location.host.concat('', ); // + strUser
 			
-			<!-- let user =  -->
-			<!-- { -->
-				<!-- names: settings_form_names.value, -->
-				<!-- dob: settings_form_birthdate.value, -->
-				<!-- orgname: settings_form_workname.value, -->
-				<!-- email: settings_form_email.value, -->
-				<!-- login: settings_form_login.value, -->
-				<!-- pass: settings_form_password.value -->
-			<!-- } -->
-			<!-- console.log(user) -->
+		//	let user = 
+		//	{
+		//		names: settings_form_names.value,
+		//		dob: settings_form_birthdate.value,
+		//		orgname: settings_form_workname.value,
+		//		email: settings_form_email.value,
+		//		login: settings_form_login.value,
+		//		pass: settings_form_password.value
+		//	}
+		//	console.log(user)
 			
-			<!-- let feed = JSON.stringify(user) -->
+		//	let feed = JSON.stringify(user)
 			
-			<!-- console.log(user) -->
+		//	console.log(user)
 			
-			<!-- let data = []; -->
-			<!-- data.push(feed); -->
+		//	let data = [];
+		//	data.push(feed);
 			
-			<!-- //<form enctype="multipart/form-data" method="post" action="/post"> -->
+		//	//<form enctype="multipart/form-data" method="post" action="/post">
 			
-			<!-- console.log(feed) -->
-			<!-- httpPostAsync(data_tosend, feed, finall, "multipart/form-data") -->
-		<!-- }) -->
+		//	console.log(feed)
+		//	httpPostAsync(data_tosend, feed, finall, "multipart/form-data")
+		//})
 	</script>
 </body>
 </html>

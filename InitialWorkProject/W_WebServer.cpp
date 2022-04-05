@@ -37,6 +37,11 @@ void W_WebServer::Stop()
 	D_DataBase::DataBase()->D_Close();
 }
 
+void W_WebServer::Handle(WebToolkit::HttpServerContext* context)
+{
+	//Empty :( 'cause it don't works (custom dispatcher)
+}
+
 const char* U_GetPageByEnum(W_PAGES page)
 {
 	switch (page)
@@ -186,6 +191,8 @@ void W_WebServer::Index(WebToolkit::HttpServerContext* context)
 			break;
 		}
 
+		sessionObj->open_page = -1;
+
 		return_page = format(return_page.c_str(), LKOpen, RequestsOpen, DBOpen);
 
 		if(sessionObj->is_admin)
@@ -221,31 +228,55 @@ void W_WebServer::Index(WebToolkit::HttpServerContext* context)
 				}
 
 			}
-			//Get concrete user data (need rework)
+			//Get concrete user data
 			{
 				auto it = context->parameters.find("GTCONUSRDATA");
 				if (it != context->parameters.end())
 				{
-					LOG(LogLevel::LogVerbose) << "Adm is requesting concrete user data!";
-					D_UserData* users = nullptr;
-					size_t users_count = D_DataBase::DataBase()->D_GetAllUsers(*&users);
+					//LOG(LogLevel::LogVerbose) << "Adm is requesting concrete user data!";
 
 					int user_id = atoi(it->second.c_str());
+					auto user = D_DataBase::DataBase()->D_GetUserByID(user_id);
+
+					if(sessionObj->is_admin)
+					{
+						sessionObj->admin_change_data_id = user_id;
+					}
+
+					std::string TheGreatBuffer = "{\"users\": [\n";
+					if(user.Login != "")
+					{
+						std::ostringstream out_json_data;
+						struct_mapping::map_struct_to_json(user, out_json_data, "  ");
+
+						TheGreatBuffer += out_json_data.str();
+						TheGreatBuffer += "\n]}";
+
+						context->responseBody << TheGreatBuffer;
+					}
+					return;
+				}
+			}
+			//Get count and names
+			{
+				auto it = context->parameters.find("UPDUSRS");
+				if (it != context->parameters.end())
+				{
+					D_UserSelectData* users = nullptr;
+					size_t users_count = D_DataBase::DataBase()->D_GetUsersForList(*&users);
 
 					std::string TheGreatBuffer = "{\"users\": [\n";
 					for (int i = 0; i != users_count; i++)
 					{
-						if (users[i].ID != user_id)
+						if (i > 0)
 						{
-							continue;
+							TheGreatBuffer += ",\n";
 						}
 
 						std::ostringstream out_json_data;
 						struct_mapping::map_struct_to_json(users[i], out_json_data, "  ");
 
 						TheGreatBuffer += out_json_data.str();
-
-						break;
 					}
 					TheGreatBuffer += "\n]}";
 
@@ -254,6 +285,7 @@ void W_WebServer::Index(WebToolkit::HttpServerContext* context)
 					delete[] users;
 					return;
 				}
+
 			}
 		}
 
@@ -265,6 +297,7 @@ void W_WebServer::Index(WebToolkit::HttpServerContext* context)
 	}
 }
 
+//Push on LK
 void W_WebServer::ChangeData(WebToolkit::HttpServerContext* context)
 {
 	W_WebSession* sessionObj = static_cast<W_WebSession*>(context->sessionObject);
@@ -274,6 +307,19 @@ void W_WebServer::ChangeData(WebToolkit::HttpServerContext* context)
 		if(sessionObj->is_admin)
 		{
 			LOG(LogVerbose) << "Admin is requesting change of user data";
+
+			std::vector<std::string> user_changable_data;
+			user_changable_data.push_back(context->parameters["user_birthdate"]);
+			user_changable_data.push_back(context->parameters["user_workname"]);
+			user_changable_data.push_back(context->parameters["user_position"]); 
+			user_changable_data.push_back(context->parameters["user_names"]);
+			user_changable_data.push_back(context->parameters["user_email"]);
+			user_changable_data.push_back(context->parameters["user_login"]);
+			user_changable_data.push_back(context->parameters["user_password"]);
+
+			int id = sessionObj->admin_change_data_id;
+
+			D_DataBase::DataBase()->D_ChangeUserDataById(id, user_changable_data);
 		}
 
 		sessionObj->open_page = 0; //For lk

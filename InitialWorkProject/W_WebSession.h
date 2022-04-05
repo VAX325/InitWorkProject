@@ -17,6 +17,9 @@ public:
 	int last_page;
 
 	int open_page;
+
+	//Crutch
+	int admin_change_data_id;
 };
 
 #endif
