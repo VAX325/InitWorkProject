@@ -90,7 +90,6 @@
 		function UpdateUserListCallback(response)
 		{
             const array = JSON.parse(response).users
-			console.log(array)
 
             var i, L = settings_select.options.length - 1;
 			for (i = L; i >= 0; i--)
@@ -266,7 +265,6 @@
 		function OnGetConcreteUserData(response)
 		{
 			const users = JSON.parse(response).users
-			console.log(users[0]);
 
 			settings_form_names.value = users[0].names;
 			settings_form_birthdate.value = users[0].dob;
@@ -276,50 +274,6 @@
 			settings_form_login.value = users[0].login;
 			settings_form_password.value = users[0].pass;
 		}
-		
-		//const updateUserdata = document.getElementById("settings-data-from-update")
-		//updateUserdata.addEventListener("click", () => {
-		//	const strUser = user_selector.value;
-		//	let data_tosend = window.location.href.concat('', '?GTCONUSRDATA=' + strUser);
-			
-		//	httpGetAsync(data_tosend, OnGetConcreteUserData)
-			
-		//	curr_usr = user_selector.value;
-		//})
-		
-		function finall(response)
-		{
-			console.log("huray!")
-		}
-		
-		//const pushUserdata = document.getElementById("settings-data-from-push")
-		//pushUserdata.addEventListener("click", () => {
-		//	const strUser = user_selector.value;
-		//	let data_tosend = '/change_data' //window.location.host.concat('', ); // + strUser
-			
-		//	let user = 
-		//	{
-		//		names: settings_form_names.value,
-		//		dob: settings_form_birthdate.value,
-		//		orgname: settings_form_workname.value,
-		//		email: settings_form_email.value,
-		//		login: settings_form_login.value,
-		//		pass: settings_form_password.value
-		//	}
-		//	console.log(user)
-			
-		//	let feed = JSON.stringify(user)
-			
-		//	console.log(user)
-			
-		//	let data = [];
-		//	data.push(feed);
-			
-		//	//<form enctype="multipart/form-data" method="post" action="/post">
-			
-		//	console.log(feed)
-		//	httpPostAsync(data_tosend, feed, finall, "multipart/form-data")
-		//})
 	</script>
 </body>
 </html>

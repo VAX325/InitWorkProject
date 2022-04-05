@@ -163,10 +163,10 @@ extern const char* format(const char* format, ...)
 	return Buff;
 }
 
-int D_DataBase::D_UserAuthNew(const char* login, const char* pass)
+int D_DataBase::D_UserAuthNew(const char* login, const char* pass, int * user_id_ptr)
 {
 	const char* buff = format(
-		"SELECT LOG, PASS, ADM FROM RootDB\
+		"SELECT LOG, PASS, ADM, ID FROM RootDB\
 		WHERE LOG = '%s' AND PASS = '%s'",
 		login, pass
 		);
@@ -180,6 +180,8 @@ int D_DataBase::D_UserAuthNew(const char* login, const char* pass)
 		}
 		else
 		{
+			*user_id_ptr = atoi(sql_return->columns_data[3].c_str());
+
 			int adm = atoi(sql_return->columns_data[2].c_str());
 			return 1 + adm;
 		}

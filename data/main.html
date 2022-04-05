@@ -1,37 +1,100 @@
 <!doctype html>
 <html>
 <head>
+	<link rel="stylesheet" type="text/css" href="data/main.css" />
 	<meta charset="utf-8">
-	<title>Главная страница</title>
+	<title>Главная страница (Администратор)</title>
 </head>
 <body>
 	<button id="showRequests">Заявления</button>
 	<button id="showSettings">Личный кабинет</button>
-	<div id="settings-div" style="display:none;">
-    	<p>ФИО</p><input id="user_names">
-        <p>Дата рождения</p><input id="user_birthdate">
-        <p>Названия организации</p><input id="user_workname">
-        <p>Рабочая почта</p><input id="user_email">
-        <p>Логин</p><input id="user_login">
-        <p>Пароль</p><input id="user_password">
+
+	<div id="settings-div" style="%s">
+		<form id="settings-data-form">
+			<p>ФИО</p><input id="user_names" name="user_names" type="text" readonly="readonly">
+			<p>Дата рождения</p><input id="user_birthdate" name="user_birthdate" type="text" readonly="readonly">
+			<p>Названия организации</p><input id="user_workname" name="user_workname" type="text" readonly="readonly">
+			<p>Должность</p><input id="user_position" name="user_position" type="text" readonly="readonly">
+			<p>Рабочая почта</p><input id="user_email" name="user_email" type="text" readonly="readonly">
+			<p>Логин</p><input id="user_login" name="user_login" type="text" readonly="readonly">
+			<p>Пароль</p><input id="user_password" name="user_password" type="text" readonly="readonly">
+		</form>
 	</div>
-	<div id="requests-div" style="display:none;"></div><br>
+
+	<div id="requests-div" style="%s"></div>
 
 	<script language="javascript">
-		let requests = document.getElementById("requests-div")
-		let settings = document.getElementById("settings-div")
-		let showRequests = document.getElementById("showRequests")
-		let showSettings = document.getElementById("showSettings")
-		
+		window.onload = function () {
+			UpdateUserSettings();
+		};
+
+		const requests = document.getElementById("requests-div")
+		const settings = document.getElementById("settings-div")
+		const admmenu = document.getElementById("adminmenu-div")
+		const showRequests = document.getElementById("showRequests")
+		const showSettings = document.getElementById("showSettings")
+
 		showRequests.addEventListener("click", () => {
 			requests.style.display = "block"
 			settings.style.display = "none"
 		})
-		
+
+		function UpdateUserSettings() {
+			let data_tosend = window.location.href.concat('', '?GTCONUSRDATA=user');
+
+			httpGetAsync(data_tosend, OnGetConcreteUserData)
+		}
+
 		showSettings.addEventListener("click", () => {
 			requests.style.display = "none"
 			settings.style.display = "block"
+
+			UpdateUserSettings();
 		})
+
+		function httpPostAsync(theURL, data, callback, encrypt) {
+			const xmlHttp = new XMLHttpRequest();
+			xmlHttp.onreadystatechange = function () {
+				if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+					callback(xmlHttp.responseText);
+				}
+			}
+			xmlHttp.open("POST", theURL, true); // true for asynchronous
+			xmlHttp.setRequestHeader('Content-Type', encrypt);
+			xmlHttp.send(data);
+		}
+
+		function httpGetAsync(theUrl, callback) {
+			const xmlHttp = new XMLHttpRequest();
+			xmlHttp.onreadystatechange = function () {
+				if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+					callback(xmlHttp.responseText);
+			}
+			xmlHttp.open("GET", theUrl, true); // true for asynchronous
+			xmlHttp.send(null);
+		}
+
+		let curr_usr = 0;
+
+		const settings_form_names = document.getElementById("user_names")
+		const settings_form_birthdate = document.getElementById("user_birthdate")
+		const settings_form_workname = document.getElementById("user_workname")
+		const settings_form_position = document.getElementById("user_position")
+		const settings_form_email = document.getElementById("user_email")
+		const settings_form_login = document.getElementById("user_login")
+		const settings_form_password = document.getElementById("user_password")
+
+		function OnGetConcreteUserData(response) {
+			const users = JSON.parse(response).users
+
+			settings_form_names.value = users[0].names;
+			settings_form_birthdate.value = users[0].dob;
+			settings_form_workname.value = users[0].orgname;
+			settings_form_position.value = users[0].pos;
+			settings_form_email.value = users[0].email;
+			settings_form_login.value = users[0].login;
+			settings_form_password.value = users[0].pass;
+		}
 	</script>
 </body>
 </html>

@@ -118,7 +118,7 @@ void W_WebServer::Login(WebToolkit::HttpServerContext* context)
 				LOG(LogLevel::LogVerbose) << username;
 				LOG(LogLevel::LogVerbose) << password;
 
-				int result = D_DataBase::DataBase()->D_UserAuthNew(username.c_str(), password.c_str());
+				int result = D_DataBase::DataBase()->D_UserAuthNew(username.c_str(), password.c_str(), &sessionObj->user_id);
 
 				if (result > 0)
 				{
@@ -228,35 +228,6 @@ void W_WebServer::Index(WebToolkit::HttpServerContext* context)
 				}
 
 			}
-			//Get concrete user data
-			{
-				auto it = context->parameters.find("GTCONUSRDATA");
-				if (it != context->parameters.end())
-				{
-					//LOG(LogLevel::LogVerbose) << "Adm is requesting concrete user data!";
-
-					int user_id = atoi(it->second.c_str());
-					auto user = D_DataBase::DataBase()->D_GetUserByID(user_id);
-
-					if(sessionObj->is_admin)
-					{
-						sessionObj->admin_change_data_id = user_id;
-					}
-
-					std::string TheGreatBuffer = "{\"users\": [\n";
-					if(user.Login != "")
-					{
-						std::ostringstream out_json_data;
-						struct_mapping::map_struct_to_json(user, out_json_data, "  ");
-
-						TheGreatBuffer += out_json_data.str();
-						TheGreatBuffer += "\n]}";
-
-						context->responseBody << TheGreatBuffer;
-					}
-					return;
-				}
-			}
 			//Get count and names
 			{
 				auto it = context->parameters.find("UPDUSRS");
@@ -286,6 +257,46 @@ void W_WebServer::Index(WebToolkit::HttpServerContext* context)
 					return;
 				}
 
+			}
+		}
+
+		//Get concrete user data
+		{
+			auto it = context->parameters.find("GTCONUSRDATA");
+			if (it != context->parameters.end())
+			{
+				//LOG(LogLevel::LogVerbose) << "Adm is requesting concrete user data!";
+
+				int user_id = -1;
+				if (it->second == "user")
+					user_id = sessionObj->user_id;
+				else
+					user_id = atoi(it->second.c_str());
+
+				if (!sessionObj->is_admin && sessionObj->user_id != user_id)
+				{
+					return;
+				}
+
+				auto user = D_DataBase::DataBase()->D_GetUserByID(user_id);
+
+				if (sessionObj->is_admin)
+				{
+					sessionObj->admin_change_data_id = user_id;
+				}
+
+				std::string TheGreatBuffer = "{\"users\": [\n";
+				if (user.Login != "")
+				{
+					std::ostringstream out_json_data;
+					struct_mapping::map_struct_to_json(user, out_json_data, "  ");
+
+					TheGreatBuffer += out_json_data.str();
+					TheGreatBuffer += "\n]}";
+
+					context->responseBody << TheGreatBuffer;
+				}
+				return;
 			}
 		}
 

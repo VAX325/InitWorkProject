@@ -18,6 +18,8 @@ public:
 
 	int open_page;
 
+	int user_id;
+
 	//Crutch
 	int admin_change_data_id;
 };

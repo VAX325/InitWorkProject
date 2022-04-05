@@ -46,7 +46,7 @@ public:
 	Returns 1 if user is passed
 	Retruns 2 if user is admin
 	*/
-	int D_UserAuthNew(const char* login, const char* pass);
+	int D_UserAuthNew(const char* login, const char* pass, int * user_id_ptr);
 
 	//Only admin access
 	size_t D_GetAllUsers(D_UserData*& users);
