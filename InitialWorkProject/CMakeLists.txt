@@ -7,6 +7,7 @@ ENDIF()
 include_directories(${CMAKE_SOURCE_DIR}/Libs/include)
 include_directories(${CMAKE_SOURCE_DIR}/Libs/include/CoreToolkit)
 include_directories(${CMAKE_SOURCE_DIR}/Libs/include/WebToolkit)
+include_directories(${CMAKE_SOURCE_DIR}/Libs/include/cs2cpp)
 link_directories(${CMAKE_SOURCE_DIR}/Libs/lib)
 link_directories(${CMAKE_SOURCE_DIR}/Libs/bin)
 

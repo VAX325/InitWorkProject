@@ -6,62 +6,181 @@
 	<title>Главная страница (Администратор)</title>
 </head>
 <body>
-	<button id="showRequests">Заявления</button>
-	<button id="showSettings">Личный кабинет</button>
-	<button id="showAdminMenu">База Данных (Обновить)</button>
-	
+	<div id="control-buttons-forms">
+		<!-- method="post" action="/logout"-->
+		<button id="showRequests">Заявления</button>
+		<button id="showSettings">Личный кабинет</button>
+		<button id="showAdminMenu">База Данных (Обновить)</button>
+		<button id="quitButton">Выйти</button>
+	</div>
+
 	<div id="settings-div" style="%s">
-		<form id="settings-data-form" enctype="multipart/form-data" method="post" action="/change_data">
+		<form id="settings-data-form" class="settings_form" enctype="multipart/form-data" method="post" action="/change_data">
 			<select id="settings-data-form-user-select" onchange="UpdateUserSettings()">
 				<option value="0">ADMIN</option>
 			</select>
 
-			<p>ФИО</p><input id="user_names" name="user_names" type="text">
-			<p>Дата рождения</p><input id="user_birthdate" name="user_birthdate" type="text">
-			<p>Названия организации</p><input id="user_workname" name="user_workname" type="text">
-			<p>Должность</p><input id="user_position" name="user_position" type="text">
-			<p>Рабочая почта</p><input id="user_email" name="user_email" type="text">
-			<p>Логин</p><input id="user_login" name="user_login" type="text">
-			<p>Пароль</p><input id="user_password" name="user_password" type="text">
+			<p>ФИО</p><input class="settings_form_input" id="user_names" name="user_names" type="text">
+			<p>Дата рождения</p><input class="settings_form_input" id="user_birthdate" name="user_birthdate" type="text">
+			<p>Названия организации</p><input class="settings_form_input" id="user_workname" name="user_workname" type="text">
+			<p>Должность</p><input class="settings_form_input" id="user_position" name="user_position" type="text">
+			<p>Рабочая почта</p><input class="settings_form_input" id="user_email" name="user_email" type="text">
+			<p>Логин</p><input class="settings_form_input" id="user_login" name="user_login" type="text">
+			<p>Пароль</p><input class="settings_form_input" id="user_password" name="user_password" type="text">
 
-			<input id="settings-data-from-push" type="submit" value="Push changed data">  <!--id="settings-data-from-push">Push changed data</button> -->
+			<input class="settings_form_input" id="settings-data-from-push" type="submit" value="Push changed data">  <!--id="settings-data-from-push">Push changed data</button> -->
 		</form>
-		<!--<button id="settings-data-from-update">Update data</button>-->
 	</div>
-	
-	<div id="requests-div" style="%s"></div>
-	
+
+	<div id="requests-div" style="%s">
+		<div id="requests-choice-form" class="requests_coise_form">
+			<button id="requests-choice-rest-full">Оплачиваемый отпуск</button>
+			<button id="requests-choice-rest-lite">Отпуск без сохранения ЗП</button>
+			<button id="requests-choice-job-quit">Заявление на увольнение</button>
+		</div>
+
+		<form id="requests-rest-full" class="requests_rest_full" style="display: none;" enctype="multipart/form-data"> <!--method="post" action="/construct_full_rest"-->
+			<p>Должность</p><input class="rest_full_input" type="text" id="requests-rest-full-position" name="position" required/>
+			<p>ФИО</p><input class="rest_full_input" type="text" id="requests-rest-full-names" name="fullnames" required/>
+
+			<p>Начало отпуска</p><input class="rest_full_input" type="date" id="requests-rest-full-start-date" name="start_date" required/>
+			<p>Конец отпуска</p><input class="rest_full_input" type="date" id="requests-rest-full-end-date" name="end_date" required/>
+			<p>Продолжительность (в днях)</p><input class="rest_full_input" type="text" id="requests-rest-full-count" name="full_count" required/>
+			<p>График отпусков на</p><input class="rest_full_input" type="text" id="requests-rest-full-calendar" name="full_calendar" required/>
+
+			<p>Текущая дата</p><input class="rest_full_input" type="date" id="requests-rest-full-current-date" name="cur_date" required/>
+
+			<p>Сокращенное ФИО</p><input class="rest_full_input" type="text" id="requests-rest-full-short-names" name="short_names" required/>
+
+			<span class="validity"></span>
+			<input class="rest_full_input" id="requests-rest-full-push" type="button" onclick="SendFullRestRequest()" value="Заполнить и скачать"> <!--type="submit"-->
+		</form>
+
+		<div id="requests-rest-lite" style="display: none;">
+			<p>Nice2</p>
+		</div>
+
+		<div id="requests-job-quit" style="display: none;">
+			<p>Nice3</p>
+		</div>
+	</div>
+
 	<div id="adminmenu-div" style="%s">
-		<!-- <form id="adminmenu-form-change"> -->
-			<!-- <input type="checkbox" id="adminmenu-form-change-true" onclick="DBChange(0)">Change</input> -->
-			<!-- <input type="checkbox" id="adminmenu-form-change-false" onclick="DBChange(1)">Create</input> -->
-		<!-- </form> -->
-	
 		<table id="adminmenu-table">
 			<tbody>
-			<!-- huh -->
+				<!-- huh -->
 			</tbody>
 		</table>
-		
-		<!-- <form id="adminmenu-form-apply"> -->
-			<!-- ID:<input id="adminmenu-newusr-id"></input> -->
-			<!-- ADM:<input id="adminmenu-newusr-adm"></input> -->
-			<!-- DOB:<input id="adminmenu-newusr-dob"></input> -->
-			<!-- ORGNAME:<input id="adminmenu-newusr-orgname"></input> -->
-			<!-- POS:<input id="adminmenu-newusr-pos"></input> -->
-			<!-- EMAIL:<input id="adminmenu-newusr-email"></input> -->
-			<!-- LOGIN:<input id="adminmenu-newusr-login"></input> -->
-			<!-- PASS:<input id="adminmenu-newusr-password"></input> -->
-			
-			<!-- <button id="adminmenu-form-apply" onclick="DBApplyData">Apply</button> -->
-		<!-- </form> -->
 	</div>
 
+	<!--Requests-->
 	<script language="javascript">
-        window.onload = function () {
+		const requests_choise_rest_full = document.getElementById("requests-rest-full")
+		const requests_choise_rest_lite = document.getElementById("requests-rest-lite")
+		const requests_choise_job_quit = document.getElementById("requests-job-quit")
+
+		const requests_choise_button_rest_full = document.getElementById("requests-choice-rest-full")
+		const requests_choise_button_rest_lite = document.getElementById("requests-choice-rest-lite")
+		const requests_choise_button_job_quit = document.getElementById("requests-choice-job-quit")
+
+		requests_choise_button_rest_full.addEventListener("click", () => {
+            requests_choise_rest_full.style.display = "block"
+			requests_choise_rest_lite.style.display = "none"
+			requests_choise_job_quit.style.display = "none"
+
+			UpdateRequestDataRestFull();
+		})
+
+		requests_choise_button_rest_lite.addEventListener("click", () => {
+			requests_choise_rest_full.style.display = "none"
+			requests_choise_rest_lite.style.display = "block"
+            requests_choise_job_quit.style.display = "none"
+		})
+
+		requests_choise_button_job_quit.addEventListener("click", () => {
+			requests_choise_rest_full.style.display = "none"
+			requests_choise_rest_lite.style.display = "none"
+            requests_choise_job_quit.style.display = "block"
+		})
+
+        const requests_rest_full_position = document.getElementById("requests-rest-full-position")
+        const requests_rest_full_names = document.getElementById("requests-rest-full-names")
+        const requests_rest_full_start_date = document.getElementById("requests-rest-full-start-date")
+        const requests_rest_full_end_date = document.getElementById("requests-rest-full-end-date")
+        const requests_rest_full_count = document.getElementById("requests-rest-full-count")
+        const requests_rest_full_calendar = document.getElementById("requests-rest-full-calendar")
+        const requests_rest_full_current_date = document.getElementById("requests-rest-full-current-date")
+        const requests_rest_full_short_names = document.getElementById("requests-rest-full-short-names")
+        function OnUpdateRequestDataRestFull(response)
+		{
+			const users = JSON.parse(response).users;
+			requests_rest_full_position.value = users[0].pos;
+            requests_rest_full_names.value = users[0].names;
+            //settings_form_birthdate.value = users[0].dob;
+            //settings_form_workname.value = users[0].orgname;
+            //settings_form_position.value = 
+            //settings_form_email.value = users[0].email;
+            //settings_form_login.value = users[0].login;
+            //settings_form_password.value = users[0].pass;
+		}
+
+		function UpdateRequestDataRestFull()
+        {
+            httpGetAsync(window.location.href.concat('', '?GTUSRDATA=true'), OnUpdateRequestDataRestFull)
+		}
+
+
+		function SendFullRestRequest()
+		{
+			if (!requests_rest_full_position.value)
+				return;
+            if (!requests_rest_full_names.value)
+				return;
+            if (!requests_rest_full_start_date.value)
+				return;
+            if (!requests_rest_full_end_date.value)
+				return;
+            if (!requests_rest_full_count.value)
+				return;
+            if (!requests_rest_full_calendar.value)
+				return;
+            if (!requests_rest_full_current_date.value)
+				return;
+            if (!requests_rest_full_short_names.value)
+				return;
+
+
+            result = fetch('/construct_full_rest', {
+                method: 'POST',
+                body: new FormData(document.getElementById('requests-rest-full'))
+			});
+
+            result.then(OnGetFullRestRequest, OnFailedGetFullRestRequest);
+		}
+
+		function OnFailedGetFullRestRequest()
+		{
+			console.log(":(");
+		}
+
+		function OnGetFullRestRequest(response)
+		{
+            response.text().then(function (text) {
+                console.log(result);
+                console.log(text);
+
+                var tab = window.open('about:blank', '_blank');
+                tab.document.write(text); // where 'html' is a variable containing your HTML
+                tab.document.close(); // to finish loading the page
+            });
+		}
+	</script>
+
+	<script language="javascript">
+		window.onload = function () {
 			UpdateUserList();
-            UpdateUserSettings();
-        };
+			UpdateUserSettings();
+		};
 
 		const requests = document.getElementById("requests-div")
 		const settings = document.getElementById("settings-div")
@@ -69,16 +188,20 @@
 		const showRequests = document.getElementById("showRequests")
 		const showSettings = document.getElementById("showSettings")
 		const showAdminMenu = document.getElementById("showAdminMenu")
-		
+
+		const quitButton = document.getElementById("quitButton")
+		quitButton.addEventListener("click", () => {
+			httpPostAsync("/logout", null, null, null)
+		})
+
 		showRequests.addEventListener("click", () => {
 			requests.style.display = "block"
 			settings.style.display = "none"
 			admmenu.style.display = "none"
 		})
 
-		function UpdateUserSettings()
-		{
-            const strUser = user_selector.value;
+		function UpdateUserSettings() {
+			const strUser = user_selector.value;
 			let data_tosend = window.location.href.concat('', '?GTCONUSRDATA=' + strUser);
 
 			httpGetAsync(data_tosend, OnGetConcreteUserData)
@@ -86,34 +209,30 @@
 			curr_usr = user_selector.value;
 		}
 
-        const settings_select = document.getElementById("settings-data-form-user-select");
-		function UpdateUserListCallback(response)
-		{
-            const array = JSON.parse(response).users
+		const settings_select = document.getElementById("settings-data-form-user-select");
+		function UpdateUserListCallback(response) {
+			const array = JSON.parse(response).users
 
-            var i, L = settings_select.options.length - 1;
-			for (i = L; i >= 0; i--)
-			{
-                settings_select.remove(i);
+			var i, L = settings_select.options.length - 1;
+			for (i = L; i >= 0; i--) {
+				settings_select.remove(i);
 			}
 
-			for (var i = 0; i <= array.length - 1; i++)
-			{
-                var opt = document.createElement('option');
+			for (var i = 0; i <= array.length - 1; i++) {
+				var opt = document.createElement('option');
 				opt.value = i;
-                opt.innerHTML = array[i].names;
-                settings_select.appendChild(opt);
-            }
+				opt.innerHTML = array[i].names;
+				settings_select.appendChild(opt);
+			}
 		}
 
-		function UpdateUserList()
-		{
-            const strUser = user_selector.value;
-            let data_tosend = window.location.href.concat('', '?UPDUSRS=true');
+		function UpdateUserList() {
+			const strUser = user_selector.value;
+			let data_tosend = window.location.href.concat('', '?UPDUSRS=true');
 
-            httpGetAsync(data_tosend, UpdateUserListCallback)
+			httpGetAsync(data_tosend, UpdateUserListCallback)
 
-            curr_usr = user_selector.value;
+			curr_usr = user_selector.value;
 		}
 
 		showSettings.addEventListener("click", () => {
@@ -124,18 +243,17 @@
 			UpdateUserList();
 			UpdateUserSettings();
 		})
-		
+
 		const admmenu_table = document.getElementById("adminmenu-table");
 		const admnenu_tbody = admmenu_table.getElementsByTagName("tbody")[0];
-		function ClearAdmnTable()
-		{
+		function ClearAdmnTable() {
 			const rowCount = admmenu_table.rows.length;
-			while(admmenu_table.rows.length > 0) {
+			while (admmenu_table.rows.length > 0) {
 				admmenu_table.deleteRow(0);
 			}
-			
+
 			const row = document.createElement("tr");
-			
+
 			const cell1 = document.createElement("th");
 			const cell2 = document.createElement("th");
 			const cell3 = document.createElement("th");
@@ -145,7 +263,7 @@
 			const cell7 = document.createElement("th");
 			const cell8 = document.createElement("th");
 			const cell9 = document.createElement("th");
-			
+
 			cell1.innerHTML = "ID";
 			cell2.innerHTML = "ADMIN";
 			cell3.innerHTML = "NAMES";
@@ -155,7 +273,7 @@
 			cell7.innerHTML = "E-Mail";
 			cell8.innerHTML = "Login";
 			cell9.innerHTML = "Password";
-			
+
 			row.appendChild(cell1);
 			row.appendChild(cell2);
 			row.appendChild(cell3);
@@ -165,14 +283,13 @@
 			row.appendChild(cell7);
 			row.appendChild(cell8);
 			row.appendChild(cell9);
-			
+
 			admnenu_tbody.appendChild(row);
 		}
-		
-		function CreateUser(user)
-		{
+
+		function CreateUser(user) {
 			const row = document.createElement("tr");
-			
+
 			const cell1 = document.createElement("td");
 			const cell2 = document.createElement("td");
 			const cell3 = document.createElement("td");
@@ -182,7 +299,7 @@
 			const cell7 = document.createElement("td");
 			const cell8 = document.createElement("td");
 			const cell9 = document.createElement("td");
-			
+
 			cell1.innerHTML = user.id;
 			cell2.innerHTML = user.adm;
 			cell3.innerHTML = user.names;
@@ -192,7 +309,7 @@
 			cell7.innerHTML = user.email;
 			cell8.innerHTML = user.login;
 			cell9.innerHTML = user.pass;
-			
+
 			row.appendChild(cell1);
 			row.appendChild(cell2);
 			row.appendChild(cell3);
@@ -202,36 +319,33 @@
 			row.appendChild(cell7);
 			row.appendChild(cell8);
 			row.appendChild(cell9);
-			
-			admnenu_tbody.appendChild(row);  
+
+			admnenu_tbody.appendChild(row);
 		}
-		
-		function OnGetUsersData(response)
-		{
+
+		function OnGetUsersData(response) {
 			const array = JSON.parse(response).users
-			
+
 			// Clearing table first
 			ClearAdmnTable()
-			
-			for(let i = 0; i < array.length; ++i)
-			{
+
+			for (let i = 0; i < array.length; ++i) {
 				CreateUser(array[i])
 			}
 		}
-		
+
 		showAdminMenu.addEventListener("click", () => {
 			requests.style.display = "none"
 			settings.style.display = "none"
 			admmenu.style.display = "block"
-			
+
 			httpGetAsync(window.location.href.concat('', '?GTUSRDATA=true'), OnGetUsersData)
 		})
-		
-		function httpPostAsync(theURL, data, callback, encrypt)
-		{
+
+		function httpPostAsync(theURL, data, callback, encrypt) {
 			const xmlHttp = new XMLHttpRequest();
-			xmlHttp.onreadystatechange = function() {
-				if (xmlHttp.readyState == 4 && xmlHttp.status == 200){
+			xmlHttp.onreadystatechange = function () {
+				if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
 					callback(xmlHttp.responseText);
 				}
 			}
@@ -239,31 +353,30 @@
 			xmlHttp.setRequestHeader('Content-Type', encrypt);
 			xmlHttp.send(data);
 		}
-		
-		function httpGetAsync(theUrl, callback)
-		{
+
+		function httpGetAsync(theUrl, callback) {
 			const xmlHttp = new XMLHttpRequest();
-			xmlHttp.onreadystatechange = function() {
-			if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-				callback(xmlHttp.responseText);
+			xmlHttp.onreadystatechange = function () {
+				if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+					if (callback != null || callback != undefined)
+						callback(xmlHttp.responseText);
 			}
 			xmlHttp.open("GET", theUrl, true); // true for asynchronous
 			xmlHttp.send(null);
 		}
-		
+
 		const user_selector = document.getElementById("settings-data-form-user-select");
 		let curr_usr = 0;
-		
+
 		const settings_form_names = document.getElementById("user_names")
 		const settings_form_birthdate = document.getElementById("user_birthdate")
 		const settings_form_workname = document.getElementById("user_workname")
-        const settings_form_position = document.getElementById("user_position")
+		const settings_form_position = document.getElementById("user_position")
 		const settings_form_email = document.getElementById("user_email")
 		const settings_form_login = document.getElementById("user_login")
 		const settings_form_password = document.getElementById("user_password")
-		
-		function OnGetConcreteUserData(response)
-		{
+
+		function OnGetConcreteUserData(response) {
 			const users = JSON.parse(response).users
 
 			settings_form_names.value = users[0].names;

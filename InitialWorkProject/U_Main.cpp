@@ -59,6 +59,8 @@ int main(int argc, char** argv)
 	}
 #endif
 
+	setlocale(LC_ALL, ".UTF8");
+
 	W_WebServer* srv = new W_WebServer();
 	srv->Run();
 

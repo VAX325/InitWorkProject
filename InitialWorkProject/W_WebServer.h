@@ -28,7 +28,10 @@ private:
 
 	void Login(WebToolkit::HttpServerContext* context);
 	void Index(WebToolkit::HttpServerContext* context);
+	void LogOut(WebToolkit::HttpServerContext* context);
 	void ChangeData(WebToolkit::HttpServerContext* context);
+
+	void ConstructFullRest(WebToolkit::HttpServerContext* context);
 };
 
 #endif

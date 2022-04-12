@@ -8,9 +8,12 @@
 <body>
 	<button id="showRequests">Заявления</button>
 	<button id="showSettings">Личный кабинет</button>
+	<form id="settings-data-form" method="post" action="/logout">
+		<button id="quitButton">Выйти</button>
+	</form>
 
 	<div id="settings-div" style="%s">
-		<form id="settings-data-form">
+		<form id="settings-data-form" class="settings_form">
 			<p>ФИО</p><input id="user_names" name="user_names" type="text" readonly="readonly">
 			<p>Дата рождения</p><input id="user_birthdate" name="user_birthdate" type="text" readonly="readonly">
 			<p>Названия организации</p><input id="user_workname" name="user_workname" type="text" readonly="readonly">
@@ -21,7 +24,137 @@
 		</form>
 	</div>
 
-	<div id="requests-div" style="%s"></div>
+	<div id="requests-div" style="%s">
+		<div id="requests-choice-form" class="requests_coise_form">
+			<button id="requests-choice-rest-full">Оплачиваемый отпуск</button>
+			<button id="requests-choice-rest-lite">Отпуск без сохранения ЗП</button>
+			<button id="requests-choice-job-quit">Заявление на увольнение</button>
+		</div>
+
+		<form id="requests-rest-full" class="requests_rest_full" style="display: none;" enctype="multipart/form-data">
+			<!--method="post" action="/construct_full_rest"-->
+			<p>Должность</p><input class="rest_full_input" type="text" id="requests-rest-full-position" name="position" required />
+			<p>ФИО</p><input class="rest_full_input" type="text" id="requests-rest-full-names" name="fullnames" required />
+
+			<p>Начало отпуска</p><input class="rest_full_input" type="date" id="requests-rest-full-start-date" name="start_date" required />
+			<p>Конец отпуска</p><input class="rest_full_input" type="date" id="requests-rest-full-end-date" name="end_date" required />
+			<p>Продолжительность (в днях)</p><input class="rest_full_input" type="text" id="requests-rest-full-count" name="full_count" required />
+			<p>График отпусков на</p><input class="rest_full_input" type="text" id="requests-rest-full-calendar" name="full_calendar" required />
+
+			<p>Текущая дата</p><input class="rest_full_input" type="date" id="requests-rest-full-current-date" name="cur_date" required />
+
+			<p>Сокращенное ФИО</p><input class="rest_full_input" type="text" id="requests-rest-full-short-names" name="short_names" required />
+
+			<span class="validity"></span>
+			<input class="rest_full_input" id="requests-rest-full-push" type="button" onclick="SendFullRestRequest()" value="Заполнить и скачать"> <!--type="submit"-->
+		</form>
+
+		<div id="requests-rest-lite" style="display: none;">
+			<p>Nice2</p>
+		</div>
+
+		<div id="requests-job-quit" style="display: none;">
+			<p>Nice3</p>
+		</div>
+	</div>
+
+	<!--Requests-->
+	<script language="javascript">
+		const requests_choise_rest_full = document.getElementById("requests-rest-full")
+		const requests_choise_rest_lite = document.getElementById("requests-rest-lite")
+		const requests_choise_job_quit = document.getElementById("requests-job-quit")
+
+		const requests_choise_button_rest_full = document.getElementById("requests-choice-rest-full")
+		const requests_choise_button_rest_lite = document.getElementById("requests-choice-rest-lite")
+		const requests_choise_button_job_quit = document.getElementById("requests-choice-job-quit")
+
+		requests_choise_button_rest_full.addEventListener("click", () => {
+			requests_choise_rest_full.style.display = "block"
+			requests_choise_rest_lite.style.display = "none"
+			requests_choise_job_quit.style.display = "none"
+
+			UpdateRequestDataRestFull();
+		})
+
+		requests_choise_button_rest_lite.addEventListener("click", () => {
+			requests_choise_rest_full.style.display = "none"
+			requests_choise_rest_lite.style.display = "block"
+			requests_choise_job_quit.style.display = "none"
+		})
+
+		requests_choise_button_job_quit.addEventListener("click", () => {
+			requests_choise_rest_full.style.display = "none"
+			requests_choise_rest_lite.style.display = "none"
+			requests_choise_job_quit.style.display = "block"
+		})
+
+		const requests_rest_full_position = document.getElementById("requests-rest-full-position")
+		const requests_rest_full_names = document.getElementById("requests-rest-full-names")
+		const requests_rest_full_start_date = document.getElementById("requests-rest-full-start-date")
+		const requests_rest_full_end_date = document.getElementById("requests-rest-full-end-date")
+		const requests_rest_full_count = document.getElementById("requests-rest-full-count")
+		const requests_rest_full_calendar = document.getElementById("requests-rest-full-calendar")
+		const requests_rest_full_current_date = document.getElementById("requests-rest-full-current-date")
+		const requests_rest_full_short_names = document.getElementById("requests-rest-full-short-names")
+		function OnUpdateRequestDataRestFull(response) {
+			const users = JSON.parse(response).users;
+			requests_rest_full_position.value = users[0].pos;
+			requests_rest_full_names.value = users[0].names;
+			//settings_form_birthdate.value = users[0].dob;
+			//settings_form_workname.value = users[0].orgname;
+			//settings_form_position.value =
+			//settings_form_email.value = users[0].email;
+			//settings_form_login.value = users[0].login;
+			//settings_form_password.value = users[0].pass;
+		}
+
+		function UpdateRequestDataRestFull() {
+			httpGetAsync(window.location.href.concat('', '?GTUSRDATA=true'), OnUpdateRequestDataRestFull)
+		}
+
+
+		function SendFullRestRequest() {
+			if (!requests_rest_full_position.value)
+				return;
+			if (!requests_rest_full_names.value)
+				return;
+			if (!requests_rest_full_start_date.value)
+				return;
+			if (!requests_rest_full_end_date.value)
+				return;
+			if (!requests_rest_full_count.value)
+				return;
+			if (!requests_rest_full_calendar.value)
+				return;
+			if (!requests_rest_full_current_date.value)
+				return;
+			if (!requests_rest_full_short_names.value)
+				return;
+
+
+			result = fetch('/construct_full_rest', {
+				method: 'POST',
+				body: new FormData(document.getElementById('requests-rest-full'))
+			});
+
+			result.then(OnGetFullRestRequest, OnFailedGetFullRestRequest);
+		}
+
+		function OnFailedGetFullRestRequest() {
+			console.log(":(");
+		}
+
+		function OnGetFullRestRequest(response) {
+			response.text().then(function (text) {
+				console.log(result);
+				console.log(text);
+
+				var tab = window.open('about:blank', '_blank');
+				tab.document.write(text); // where 'html' is a variable containing your HTML
+				tab.document.close(); // to finish loading the page
+			});
+		}
+	</script>
 
 	<script language="javascript">
 		window.onload = function () {

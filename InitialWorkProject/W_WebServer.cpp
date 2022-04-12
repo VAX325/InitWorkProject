@@ -4,6 +4,8 @@
 #include "U_DataParser.h"
 #include "D_DataBase.h"
 
+//#include <DuckX/duckx.hpp>
+
 using namespace CoreToolkit;
 using namespace WebToolkit;
 
@@ -13,7 +15,11 @@ W_WebServer::W_WebServer()
 
 	dispatcher.AddMapping("/login", HttpGet, new HttpHandlerConnector<W_WebServer>(this, &W_WebServer::Login), true);
 	dispatcher.AddMapping("/index", HttpGet, new HttpHandlerConnector<W_WebServer>(this, &W_WebServer::Index), true);
+	dispatcher.AddMapping("/logout", HttpPost, new HttpHandlerConnector<W_WebServer>(this, &W_WebServer::LogOut), true);
 	dispatcher.AddMapping("/change_data", HttpPost, new HttpHandlerConnector<W_WebServer>(this, &W_WebServer::ChangeData), true);
+
+	dispatcher.AddMapping("/construct_full_rest", HttpPost, new HttpHandlerConnector<W_WebServer>(this, &W_WebServer::ConstructFullRest), true);
+
 	dispatcher.AddMapping("/redirect", HttpGet, new Redirector("/index"), true);
 	dispatcher.SetDefaultHandler("/redirect");
 	server->RegisterHandler(&dispatcher);
@@ -308,6 +314,34 @@ void W_WebServer::Index(WebToolkit::HttpServerContext* context)
 	}
 }
 
+void W_WebServer::LogOut(WebToolkit::HttpServerContext* context)
+{
+	W_WebSession* sessionObj = static_cast<W_WebSession*>(context->sessionObject);
+
+	if (W_EachPage(context))
+	{
+		sessionObj->W_lastAccessedTime = 0;
+
+		sessionObj->is_logged_in = false;
+		sessionObj->is_admin = false;
+
+		sessionObj->curr_page = 0;
+		sessionObj->last_page = 0;
+
+		sessionObj->open_page = -1;
+
+		sessionObj->user_id = -1;
+
+		sessionObj->admin_change_data_id = 0;
+
+		context->Redirect("/login");
+	}
+	else
+	{
+		context->Redirect("/login");
+	}
+}
+
 //Push on LK
 void W_WebServer::ChangeData(WebToolkit::HttpServerContext* context)
 {
@@ -335,6 +369,56 @@ void W_WebServer::ChangeData(WebToolkit::HttpServerContext* context)
 
 		sessionObj->open_page = 0; //For lk
 		context->Redirect("/index");
+	}
+	else
+	{
+		context->Redirect("/login");
+	}
+}
+
+inline void U_ReplaceWith(std::string& format, std::string placeholder, std::string to_replace)
+{
+	size_t res = format.find(placeholder, 0);
+	if (res != std::string::npos)
+	{
+		while (res != std::string::npos)
+		{
+			format.replace(res, placeholder.size(), to_replace);
+			res = format.find(placeholder, res + to_replace.size());
+		}
+	}
+}
+
+void W_WebServer::ConstructFullRest(WebToolkit::HttpServerContext* context)
+{
+	W_WebSession* sessionObj = static_cast<W_WebSession*>(context->sessionObject);
+
+	if (W_EachPage(context))
+	{
+		const std::string path = std::string(U_GetCWD()) + "\\data\\requests\\REQUEST_FULL\\request_full.html";
+		std::string data = CoreToolkit::FileUtils::ReadFile(path);
+		
+		std::string pos = context->parameters["position"];
+		std::string fullnames = context->parameters["fullnames"];
+		std::string start_date = context->parameters["start_date"];
+		std::string end_date = context->parameters["end_date"];
+		std::string full_count = context->parameters["full_count"];
+		std::string full_calendar = context->parameters["full_calendar"];
+		std::string cur_date = context->parameters["cur_date"];
+		std::string short_names = context->parameters["short_names"];
+
+		U_ReplaceWith(data, "{position}", pos);
+		U_ReplaceWith(data, "{names}", fullnames);
+		U_ReplaceWith(data, "{date_start}", start_date);
+		U_ReplaceWith(data, "{date_end}", end_date);
+		U_ReplaceWith(data, "{count}", full_count);
+		U_ReplaceWith(data, "{year}", full_calendar);
+		U_ReplaceWith(data, "{current_date}", cur_date);
+		U_ReplaceWith(data, "{short_names}", short_names);
+
+		sessionObj->open_page = 1;
+		context->responseBody << data;
+		//context->Redirect("/index");
 	}
 	else
 	{

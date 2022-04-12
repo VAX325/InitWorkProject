@@ -19,8 +19,18 @@ TH
 	padding: 0; /* Убираем поля вокруг текста */
 }
 
-form 
-{
+div.requests_coise_form {
+	margin-right: auto;
+	margin-left: auto;
+	padding: 5px;
+	display: block;
+	width: 100%;
+	//justify-content: center;
+}
+
+
+
+form.requests_rest_full {
 	background: #fff;
 	padding: 5px;
 	color: black;
@@ -33,7 +43,41 @@ form
 	flex-direction: column;
 }
 
-form input {
+input.rest_full_input {
+	text-align: center;
+	padding: 3px;
+	margin-bottom: 1px;
+	//margin-left: 40%;
+	width: 23%;
+	height: 20px;
+	border: 1px solid #000;
+	width: 150px;
+}
+
+input:invalid + span:after {
+	content: '✖';
+	padding-left: 5px;
+}
+
+input:valid + span:after {
+	content: '✓';
+	padding-left: 5px;
+}
+
+form.settings_form {
+	background: #fff;
+	padding: 5px;
+	color: black;
+	margin-right: auto;
+	margin-left: auto;
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
+input.settings_form_input {
 	text-align: center;
 	padding: 3px;
 	margin-bottom: 1px;

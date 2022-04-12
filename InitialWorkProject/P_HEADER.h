@@ -19,7 +19,7 @@
 #include <iostream>
 
 
-#if __cplusplus < 201703L && !WIN32
+#if __cplusplus < 201703L && !defined(WIN32)
 #error("C++ Standard need at least 17")
 #endif
 
