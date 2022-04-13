@@ -32,6 +32,10 @@ private:
 	void ChangeData(WebToolkit::HttpServerContext* context);
 
 	void ConstructFullRest(WebToolkit::HttpServerContext* context);
+	void ConstructLiteRest(WebToolkit::HttpServerContext* context);
+	void ConstructJobQuit(WebToolkit::HttpServerContext* context);
+
+	void GetRequest(WebToolkit::HttpServerContext* context);
 };
 
 #endif

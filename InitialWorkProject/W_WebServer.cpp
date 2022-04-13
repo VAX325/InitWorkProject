@@ -19,7 +19,10 @@ W_WebServer::W_WebServer()
 	dispatcher.AddMapping("/change_data", HttpPost, new HttpHandlerConnector<W_WebServer>(this, &W_WebServer::ChangeData), true);
 
 	dispatcher.AddMapping("/construct_full_rest", HttpPost, new HttpHandlerConnector<W_WebServer>(this, &W_WebServer::ConstructFullRest), true);
+	dispatcher.AddMapping("/construct_lite_rest", HttpPost, new HttpHandlerConnector<W_WebServer>(this, &W_WebServer::ConstructLiteRest), true);
+	dispatcher.AddMapping("/construct_job_quit", HttpPost, new HttpHandlerConnector<W_WebServer>(this, &W_WebServer::ConstructJobQuit), true);
 
+	dispatcher.AddMapping("/get_request", HttpGet, new HttpHandlerConnector<W_WebServer>(this, &W_WebServer::GetRequest), true);
 	dispatcher.AddMapping("/redirect", HttpGet, new Redirector("/index"), true);
 	dispatcher.SetDefaultHandler("/redirect");
 	server->RegisterHandler(&dispatcher);
@@ -88,6 +91,7 @@ inline bool W_EachPage(WebToolkit::HttpServerContext* cntx)
 		sessionObj->W_lastAccessedTime = clock();
 	}
 
+#ifdef MAKE_DISCONNECT
 	const clock_t max_time = CLOCKS_PER_SEC * MAX_TIME;
 	if (currTime - sessionObj->W_lastAccessedTime > max_time)
 	{
@@ -100,6 +104,7 @@ inline bool W_EachPage(WebToolkit::HttpServerContext* cntx)
 	{
 		sessionObj->W_lastAccessedTime = clock();
 	}
+#endif
 
 	return sessionObj->is_logged_in;
 }
@@ -389,6 +394,9 @@ inline void U_ReplaceWith(std::string& format, std::string placeholder, std::str
 	}
 }
 
+#include <chrono>
+#include <fstream>
+
 void W_WebServer::ConstructFullRest(WebToolkit::HttpServerContext* context)
 {
 	W_WebSession* sessionObj = static_cast<W_WebSession*>(context->sessionObject);
@@ -416,9 +424,155 @@ void W_WebServer::ConstructFullRest(WebToolkit::HttpServerContext* context)
 		U_ReplaceWith(data, "{current_date}", cur_date);
 		U_ReplaceWith(data, "{short_names}", short_names);
 
+		auto end = std::chrono::system_clock::now();
+		std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+
+		std::string name = "request_full_" + fullnames + std::ctime(&end_time) + ".html";
+		std::replace(name.begin(), name.end(), ':', '_');
+		std::replace(name.begin(), name.end(), ' ', '_');
+		std::replace(name.begin(), name.end(), '\n', '_');
+
+		std::string _path = std::string(U_GetCWD()) + "\\data\\requests\\" + name;
+
+		std::ofstream outfile(_path, std::fstream::out);
+		outfile.write(" ", 1);
+		outfile.close();
+
+		CoreToolkit::File* file = new CoreToolkit::File(_path, true);
+		file->Write(data);
+		delete file;
+
 		sessionObj->open_page = 1;
-		context->responseBody << data;
+		context->responseBody << name;//data;
 		//context->Redirect("/index");
+	}
+	else
+	{
+		context->Redirect("/login");
+	}
+}
+
+void W_WebServer::ConstructLiteRest(WebToolkit::HttpServerContext* context)
+{
+	W_WebSession* sessionObj = static_cast<W_WebSession*>(context->sessionObject);
+
+	if (W_EachPage(context))
+	{
+		const std::string path = std::string(U_GetCWD()) + "\\data\\requests\\REQUEST_LITE\\request_lite.html";
+		std::string data = CoreToolkit::FileUtils::ReadFile(path);
+
+		std::string pos = context->parameters["position"];
+		std::string fullnames = context->parameters["fullnames"];
+		std::string start_date = context->parameters["start_date"];
+		std::string end_date = context->parameters["end_date"];
+		std::string full_count = context->parameters["full_count"];
+		std::string cur_date = context->parameters["cur_date"];
+		std::string short_names = context->parameters["short_names"];
+
+		U_ReplaceWith(data, "{position}", pos);
+		U_ReplaceWith(data, "{names}", fullnames);
+		U_ReplaceWith(data, "{date_start}", start_date);
+		U_ReplaceWith(data, "{date_end}", end_date);
+		U_ReplaceWith(data, "{count}", full_count);
+		U_ReplaceWith(data, "{current_date}", cur_date);
+		U_ReplaceWith(data, "{short_names}", short_names);
+
+		auto end = std::chrono::system_clock::now();
+		std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+
+		std::string name = "request_lite_" + fullnames + std::ctime(&end_time) + ".html";
+		std::replace(name.begin(), name.end(), ':', '_');
+		std::replace(name.begin(), name.end(), ' ', '_');
+		std::replace(name.begin(), name.end(), '\n', '_');
+
+		std::string _path = std::string(U_GetCWD()) + "\\data\\requests\\" + name;
+
+		std::ofstream outfile(_path, std::fstream::out);
+		outfile.write(" ", 1);
+		outfile.close();
+
+		CoreToolkit::File* file = new CoreToolkit::File(_path, true);
+		file->Write(data);
+		delete file;
+
+		sessionObj->open_page = 1;
+		context->responseBody << name;//data;
+		//context->Redirect("/index");
+	}
+	else
+	{
+		context->Redirect("/login");
+	}
+}
+
+void W_WebServer::ConstructJobQuit(WebToolkit::HttpServerContext* context)
+{
+	W_WebSession* sessionObj = static_cast<W_WebSession*>(context->sessionObject);
+
+	if (W_EachPage(context))
+	{
+		const std::string path = std::string(U_GetCWD()) + "\\data\\requests\\REQUEST_JOBQUIT\\request_job_quit.html";
+		std::string data = CoreToolkit::FileUtils::ReadFile(path);
+
+		std::string pos = context->parameters["position"];
+		std::string fullnames = context->parameters["fullnames"];
+		std::string date = context->parameters["date"];
+		std::string cur_date = context->parameters["cur_date"];
+		std::string short_names = context->parameters["short_names"];
+
+		U_ReplaceWith(data, "{position}", pos);
+		U_ReplaceWith(data, "{names}", fullnames);
+		U_ReplaceWith(data, "{date}", date);
+		U_ReplaceWith(data, "{current_date}", cur_date);
+		U_ReplaceWith(data, "{short_names}", short_names);
+
+		auto end = std::chrono::system_clock::now();
+		std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+
+		std::string name = "request_lite_" + fullnames + std::ctime(&end_time) + ".html";
+		std::replace(name.begin(), name.end(), ':', '_');
+		std::replace(name.begin(), name.end(), ' ', '_');
+		std::replace(name.begin(), name.end(), '\n', '_');
+
+		std::string _path = std::string(U_GetCWD()) + "\\data\\requests\\" + name;
+
+		std::ofstream outfile(_path, std::fstream::out);
+		outfile.write(" ", 1);
+		outfile.close();
+
+		CoreToolkit::File* file = new CoreToolkit::File(_path, true);
+		file->Write(data);
+		delete file;
+
+		sessionObj->open_page = 1;
+		context->responseBody << name;//data;
+		//context->Redirect("/index");
+	}
+	else
+	{
+		context->Redirect("/login");
+	}
+}
+
+void W_WebServer::GetRequest(WebToolkit::HttpServerContext* context)
+{
+	if (W_EachPage(context))
+	{
+		if(context->parameters.size() != 1)
+		{
+			context->Redirect("/index");
+		}
+
+		std::string RequestFileToGet = context->parameters["GTREQUEST"];
+		if (RequestFileToGet == "")
+		{
+			context->Redirect("/index");
+		}
+
+		const std::string path = std::string(U_GetCWD()) + "\\data\\requests\\" + RequestFileToGet;
+		std::string data = CoreToolkit::FileUtils::ReadFile(path);
+
+		context->responseBody << data;
 	}
 	else
 	{

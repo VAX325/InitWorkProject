@@ -39,30 +39,52 @@
 			<button id="requests-choice-job-quit">Заявление на увольнение</button>
 		</div>
 
-		<form id="requests-rest-full" class="requests_rest_full" style="display: none;" enctype="multipart/form-data"> <!--method="post" action="/construct_full_rest"-->
-			<p>Должность</p><input class="rest_full_input" type="text" id="requests-rest-full-position" name="position" required/>
-			<p>ФИО</p><input class="rest_full_input" type="text" id="requests-rest-full-names" name="fullnames" required/>
+		<form id="requests-rest-full" class="requests_rest_full" style="display: none;" enctype="multipart/form-data">
+			<p>Должность</p><input class="rest_full_input" type="text" id="requests-rest-full-position" name="position" />
+			<p>ФИО</p><input class="rest_full_input" type="text" id="requests-rest-full-names" name="fullnames" />
 
-			<p>Начало отпуска</p><input class="rest_full_input" type="date" id="requests-rest-full-start-date" name="start_date" required/>
-			<p>Конец отпуска</p><input class="rest_full_input" type="date" id="requests-rest-full-end-date" name="end_date" required/>
-			<p>Продолжительность (в днях)</p><input class="rest_full_input" type="text" id="requests-rest-full-count" name="full_count" required/>
-			<p>График отпусков на</p><input class="rest_full_input" type="text" id="requests-rest-full-calendar" name="full_calendar" required/>
+			<p>Начало отпуска</p><input class="rest_full_input" type="date" id="requests-rest-full-start-date" name="start_date" />
+			<p>Конец отпуска</p><input class="rest_full_input" type="date" id="requests-rest-full-end-date" name="end_date" />
+			<p>Продолжительность (в днях)</p><input class="rest_full_input" type="text" id="requests-rest-full-count" name="full_count" />
+			<p>График отпусков на</p><input class="rest_full_input" type="text" id="requests-rest-full-calendar" name="full_calendar" />
 
-			<p>Текущая дата</p><input class="rest_full_input" type="date" id="requests-rest-full-current-date" name="cur_date" required/>
+			<p>Текущая дата</p><input class="rest_full_input" type="date" id="requests-rest-full-current-date" name="cur_date" />
 
-			<p>Сокращенное ФИО</p><input class="rest_full_input" type="text" id="requests-rest-full-short-names" name="short_names" required/>
+			<p>Сокращенное ФИО</p><input class="rest_full_input" type="text" id="requests-rest-full-short-names" name="short_names" />
 
 			<span class="validity"></span>
-			<input class="rest_full_input" id="requests-rest-full-push" type="button" onclick="SendFullRestRequest()" value="Заполнить и скачать"> <!--type="submit"-->
+			<input class="rest_full_input" id="requests-rest-full-push" type="button" onclick="SendFullRestRequest()" value="Заполнить и скачать">
 		</form>
 
-		<div id="requests-rest-lite" style="display: none;">
-			<p>Nice2</p>
-		</div>
+		<form id="requests-rest-lite" class="requests_rest_lite" style="display: none;" enctype="multipart/form-data">
+			<p>Должность</p><input class="rest_lite_input" type="text" id="requests-rest-lite-position" name="position"  />
+			<p>ФИО</p><input class="rest_lite_input" type="text" id="requests-rest-lite-names" name="fullnames"  />
 
-		<div id="requests-job-quit" style="display: none;">
-			<p>Nice3</p>
-		</div>
+			<p>Начало отпуска</p><input class="rest_lite_input" type="date" id="requests-rest-lite-start-date" name="start_date"  />
+			<p>Конец отпуска</p><input class="rest_lite_input" type="date" id="requests-rest-lite-end-date" name="end_date"  />
+			<p>Продолжительность (в днях)</p><input class="rest_lite_input" type="text" id="requests-rest-lite-count" name="full_count"  />
+
+			<p>Текущая дата</p><input class="rest_lite_input" type="date" id="requests-rest-lite-current-date" name="cur_date"  />
+
+			<p>Сокращенное ФИО</p><input class="rest_lite_input" type="text" id="requests-rest-lite-short-names" name="short_names"  />
+
+			<span class="validity"></span>
+			<input class="rest_lite_input" id="requests-rest-lite-push" type="button" onclick="SendLiteRestRequest()" value="Заполнить и скачать">
+		</form>
+
+		<form id="requests-job-quit" class="requests_job_quit" style="display: none;" enctype="multipart/form-data">
+			<p>Должность</p><input class="job_quit_input" type="text" id="requests-job-quit-position" name="position"  />
+			<p>ФИО</p><input class="job_quit_input" type="text" id="requests-job-quit-names" name="fullnames"  />
+
+			<p>Дата увольнения</p><input class="job_quit_input" type="date" id="requests-job-quit-date" name="date"  />
+
+			<p>Текущая дата</p><input class="job_quit_input" type="date" id="requests-job-quit-current-date" name="cur_date"  />
+
+			<p>Сокращенное ФИО</p><input class="job_quit_input" type="text" id="requests-job-quit-short-names" name="short_names"  />
+
+			<span class="validity"></span>
+			<input class="job_quit_input" id="requests-job-quit-push" type="button" onclick="SendJobQuitRequest()" value="Заполнить и скачать">
+		</form>
 	</div>
 
 	<div id="adminmenu-div" style="%s">
@@ -94,13 +116,17 @@
 		requests_choise_button_rest_lite.addEventListener("click", () => {
 			requests_choise_rest_full.style.display = "none"
 			requests_choise_rest_lite.style.display = "block"
-            requests_choise_job_quit.style.display = "none"
+			requests_choise_job_quit.style.display = "none"
+
+            UpdateRequestDataRestLite();
 		})
 
 		requests_choise_button_job_quit.addEventListener("click", () => {
 			requests_choise_rest_full.style.display = "none"
 			requests_choise_rest_lite.style.display = "none"
-            requests_choise_job_quit.style.display = "block"
+			requests_choise_job_quit.style.display = "block"
+
+			UpdateRequestDataJobQuit();
 		})
 
         const requests_rest_full_position = document.getElementById("requests-rest-full-position")
@@ -116,12 +142,6 @@
 			const users = JSON.parse(response).users;
 			requests_rest_full_position.value = users[0].pos;
             requests_rest_full_names.value = users[0].names;
-            //settings_form_birthdate.value = users[0].dob;
-            //settings_form_workname.value = users[0].orgname;
-            //settings_form_position.value = 
-            //settings_form_email.value = users[0].email;
-            //settings_form_login.value = users[0].login;
-            //settings_form_password.value = users[0].pass;
 		}
 
 		function UpdateRequestDataRestFull()
@@ -130,6 +150,42 @@
 		}
 
 
+        const requests_rest_lite_position = document.getElementById("requests-rest-lite-position")
+        const requests_rest_lite_names = document.getElementById("requests-rest-lite-names")
+        const requests_rest_lite_start_date = document.getElementById("requests-rest-lite-start-date")
+        const requests_rest_lite_end_date = document.getElementById("requests-rest-lite-end-date")
+        const requests_rest_lite_count = document.getElementById("requests-rest-lite-count")
+        const requests_rest_lite_calendar = document.getElementById("requests-rest-lite-calendar")
+        const requests_rest_lite_current_date = document.getElementById("requests-rest-lite-current-date")
+        const requests_rest_lite_short_names = document.getElementById("requests-rest-lite-short-names")
+        function OnUpdateRequestDataRestLite(response) {
+            const users = JSON.parse(response).users;
+            requests_rest_lite_position.value = users[0].pos;
+            requests_rest_lite_names.value = users[0].names;
+        }
+
+        function UpdateRequestDataRestLite() {
+            httpGetAsync(window.location.href.concat('', '?GTUSRDATA=true'), OnUpdateRequestDataRestLite)
+		}
+
+
+        const requests_job_quit_position = document.getElementById("requests-job-quit-position")
+        const requests_job_quit_names = document.getElementById("requests-job-quit-names")
+        const requests_job_quit_date = document.getElementById("requests-job-quit-date")
+        const requests_job_quit_current_date = document.getElementById("requests-job-quit-current-date")
+        const requests_job_quit_short_names = document.getElementById("requests-job-quit-short-names")
+        function OnUpdateRequestDataJobQuit(response) {
+            const users = JSON.parse(response).users;
+            requests_job_quit_position.value = users[0].pos;
+            requests_job_quit_names.value = users[0].names;
+        }
+
+        function UpdateRequestDataJobQuit() {
+            httpGetAsync(window.location.href.concat('', '?GTUSRDATA=true'), OnUpdateRequestDataJobQuit)
+        }
+
+	</script>
+	<script>
 		function SendFullRestRequest()
 		{
 			if (!requests_rest_full_position.value)
@@ -152,26 +208,77 @@
 
             result = fetch('/construct_full_rest', {
                 method: 'POST',
-                body: new FormData(document.getElementById('requests-rest-full'))
+                body: new FormData(document.getElementById('requests-rest-lite'))
 			});
 
-            result.then(OnGetFullRestRequest, OnFailedGetFullRestRequest);
+            result.then(OnGetRequest, OnFailedGetRequest);
 		}
 
-		function OnFailedGetFullRestRequest()
+        function SendLiteRestRequest() {
+            if (!requests_rest_lite_position.value)
+                return;
+            if (!requests_rest_lite_names.value)
+                return;
+            if (!requests_rest_lite_start_date.value)
+                return;
+            if (!requests_rest_lite_end_date.value)
+                return;
+            if (!requests_rest_lite_count.value)
+                return;
+            if (!requests_rest_lite_current_date.value)
+                return;
+            if (!requests_rest_lite_short_names.value)
+                return;
+
+
+            result = fetch('/construct_lite_rest', {
+                method: 'POST',
+                body: new FormData(document.getElementById('requests-rest-lite'))
+            });
+
+            result.then(OnGetRequest, OnFailedGetRequest);
+        }
+
+		function SendJobQuitRequest()
+		{
+            if (!requests_job_quit_position.value)
+                return;
+            if (!requests_job_quit_names.value)
+                return;
+            if (!requests_job_quit_date.value)
+                return;
+            if (!requests_job_quit_current_date.value)
+                return;
+            if (!requests_job_quit_short_names.value)
+                return;
+
+
+            result = fetch('/construct_job_quit', {
+                method: 'POST',
+                body: new FormData(document.getElementById('requests-job-quit'))
+            });
+
+            result.then(OnGetRequest, OnFailedGetRequest);
+        }
+
+		function OnFailedGetRequest()
 		{
 			console.log(":(");
 		}
 
-		function OnGetFullRestRequest(response)
+		function OnGetRequest(response)
 		{
             response.text().then(function (text) {
-                console.log(result);
-                console.log(text);
+                //console.log(text);
 
-                var tab = window.open('about:blank', '_blank');
-                tab.document.write(text); // where 'html' is a variable containing your HTML
-                tab.document.close(); // to finish loading the page
+                //var tab = window.open('about:blank', '_blank');
+                //tab.document.write(text); // where 'html' is a variable containing your HTML
+                //tab.document.close(); // to finish loading the page
+                //httpGetAsync(window.location.href.concat('', '?GTREQUEST=' + text), OnGetUsersData)
+				console.log(text)
+
+                //window.location.replace(window.location.origin.concat('/get_request', '?GTREQUEST=' + text));
+                window.open(window.location.origin.concat('/get_request', '?GTREQUEST=' + text), '_blank').focus();
             });
 		}
 	</script>
