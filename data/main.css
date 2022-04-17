@@ -3,25 +3,54 @@ body
 	background: darkcyan;
 }
 
+input
+{
+	background: MediumAquamarine;
+	border: 2px solid MediumAquamarine;
+	border-radius: 6px;
+}
+
+button
+{
+	background: LightSeaGreen;
+	border: 2px solid MediumAquamarine;
+	font-weight: bold;
+	border-radius: 6px;
+}
+
+select
+{
+	background: LightSeaGreen;
+	border: 1px solid black;
+	font-weight: bold;
+	border-radius: 6px;
+}
+
+/*Table*/
+
 TABLE 
 {
-	border-collapse: collapse; /* Убираем двойные линии между ячейками */
-	width: 600px; /* Ширина таблицы */
+	border-collapse: collapse;
+	width: 90%;
 }
 
 TH, TD 
 {
-	border: 1px solid black; /* Параметры рамки */
-	text-align: center; /* Выравнивание по центру */
-	padding: 4px; /* Поля вокруг текста */
+	background: LightSeaGreen;
+	border: 3px solid darkcyan;
+	text-align: center;
+	padding: 4px;
+	border-radius: 6px;
+	color: black;
 }
 
 TH 
 {
-	background: #fff; /* Цвет фона ячейки */
-	height: 40px; /* Высота ячеек */
-	vertical-align: bottom; /* Выравнивание по нижнему краю */
-	padding: 0; /* Убираем поля вокруг текста */
+	background: MediumAquamarine;
+	height: 40px;
+	vertical-align: bottom;
+	padding: 0;
+	font-weight: bold;
 }
 
 div.requests_coise_form {
@@ -29,45 +58,25 @@ div.requests_coise_form {
 	margin-left: auto;
 	padding: 5px;
 	display: block;
-	width: 100%;
-}
-
-
-
-form.requests_rest_full {
-	background: #fff;
-	padding: 5px;
-	color: black;
-	margin-right: auto;
-	margin-left: auto;
 	width: 99%;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	flex-direction: column;
 }
 
-input.rest_full_input {
-	text-align: center;
-	padding: 3px;
-	margin-bottom: 1px;
-	width: 23%;
-	height: 20px;
-	border: 1px solid #000;
-	width: 150px;
-}
+/*Settings*/
 
 form.settings_form {
-	background: #fff;
+	background: LightSeaGreen;
 	padding: 5px;
 	color: black;
+	margin-top: 1%;
 	margin-right: auto;
 	margin-left: auto;
-	width: 99%;
+	width: 85%;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
+	flex-wrap: wrap;
+	border-radius: 6px;
 }
 
 input.settings_form_input {
@@ -78,4 +87,90 @@ input.settings_form_input {
 	height: 25px;
 	border: 1px solid #000;
 	width: 150px;
+	border-radius: 4px;
+	flex-wrap: wrap
+}
+
+/*Requests*/
+
+form.requests_rest_full {
+	background: LightSeaGreen;
+	padding: 5px;
+	color: black;
+	margin-right: 60%;
+	margin-left: 15px;
+	width: 85%;
+	display: flex;
+	/* justify-content: center; */
+	/* align-items: center; */
+	flex-direction: column;
+	flex-wrap: wrap;
+	border-radius: 6px;
+}
+
+input.rest_full_input {
+	text-align: center;
+	padding: 3px;
+	margin-bottom: 1px;
+	width: 23%;
+	height: 20px;
+	border: 1px solid #000;
+	width: 150px;
+	border-radius: 4px;
+	flex-wrap: wrap
+}
+
+
+form.requests_rest_lite {
+	background: LightSeaGreen;
+	padding: 5px;
+	color: black;
+	margin-right: 60%;
+	margin-left: 15px;
+	width: 85%;
+	display: flex;
+	/* justify-content: center; */
+	/* align-items: center; */
+	flex-direction: column;
+	flex-wrap: wrap;
+	border-radius: 6px;
+}
+
+input.rest_lite_input {
+	text-align: center;
+	padding: 3px;
+	margin-bottom: 1px;
+	width: 23%;
+	height: 20px;
+	border: 1px solid #000;
+	width: 150px;
+	border-radius: 4px;
+	flex-wrap: wrap
+}
+
+form.requests_job_quit {
+	background: LightSeaGreen;
+	padding: 5px;
+	color: black;
+	margin-right: 60%;
+	margin-left: 15px;
+	width: 85%;
+	display: flex;
+	/* justify-content: center; */
+	/* align-items: center; */
+	flex-direction: column;
+	flex-wrap: wrap;
+	border-radius: 6px;
+}
+
+input.job_quit_input {
+	text-align: center;
+	padding: 3px;
+	margin-bottom: 1px;
+	width: 23%;
+	height: 20px;
+	border: 1px solid #000;
+	width: 150px;
+	border-radius: 4px;
+	flex-wrap: wrap
 }
