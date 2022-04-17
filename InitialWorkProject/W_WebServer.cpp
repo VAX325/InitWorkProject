@@ -23,6 +23,9 @@ W_WebServer::W_WebServer()
 	dispatcher.AddMapping("/construct_job_quit", HttpPost, new HttpHandlerConnector<W_WebServer>(this, &W_WebServer::ConstructJobQuit), true);
 
 	dispatcher.AddMapping("/get_request", HttpGet, new HttpHandlerConnector<W_WebServer>(this, &W_WebServer::GetRequest), true);
+
+	dispatcher.AddMapping("/push_user", HttpPost, new HttpHandlerConnector<W_WebServer>(this, &W_WebServer::PushUser), true);
+
 	dispatcher.AddMapping("/redirect", HttpGet, new Redirector("/index"), true);
 	dispatcher.SetDefaultHandler("/redirect");
 	server->RegisterHandler(&dispatcher);
@@ -573,6 +576,45 @@ void W_WebServer::GetRequest(WebToolkit::HttpServerContext* context)
 		std::string data = CoreToolkit::FileUtils::ReadFile(path);
 
 		context->responseBody << data;
+	}
+	else
+	{
+		context->Redirect("/login");
+	}
+}
+
+void W_WebServer::PushUser(WebToolkit::HttpServerContext* context)
+{
+	W_WebSession* sessionObj = static_cast<W_WebSession*>(context->sessionObject);
+
+	if (W_EachPage(context))
+	{
+		if(context->parameters.size())
+		{
+			std::string user_birthdate = context->parameters["user_birthdate"];
+			std::string user_email = context->parameters["user_email"];
+			std::string user_login = context->parameters["user_login"];
+			std::string user_names = context->parameters["user_names"];
+			std::string user_password = context->parameters["user_password"];
+			std::string user_position = context->parameters["user_position"];
+			std::string user_workname = context->parameters["user_workname"];
+			std::string user_admin = context->parameters["user_admin"];
+
+			D_UserData data{0};
+			data.DateOfBirth = user_birthdate;
+			data.E_Mail = user_email;
+			data.Login = user_login;
+			data.Names = user_names;
+			data.OrgName = user_workname;
+			data.Password = user_password;
+			data.Position = user_position;
+			data.Adm = user_admin.size();
+
+			D_DataBase::DataBase()->D_AddUser(data);
+
+			sessionObj->open_page = 2;
+			context->Redirect("/index");
+		}
 	}
 	else
 	{

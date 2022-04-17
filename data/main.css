@@ -8,6 +8,7 @@ input
 	background: MediumAquamarine;
 	border: 2px solid MediumAquamarine;
 	border-radius: 6px;
+	display: inline-block;
 }
 
 button
@@ -88,7 +89,8 @@ input.settings_form_input {
 	border: 1px solid #000;
 	width: 150px;
 	border-radius: 4px;
-	flex-wrap: wrap
+	flex-wrap: wrap;
+	display: inline-block;
 }
 
 /*Requests*/
@@ -117,7 +119,8 @@ input.rest_full_input {
 	border: 1px solid #000;
 	width: 150px;
 	border-radius: 4px;
-	flex-wrap: wrap
+	flex-wrap: wrap;
+	display: inline-block;
 }
 
 
@@ -145,7 +148,8 @@ input.rest_lite_input {
 	border: 1px solid #000;
 	width: 150px;
 	border-radius: 4px;
-	flex-wrap: wrap
+	flex-wrap: wrap;
+	display: inline-block;
 }
 
 form.requests_job_quit {
@@ -172,5 +176,48 @@ input.job_quit_input {
 	border: 1px solid #000;
 	width: 150px;
 	border-radius: 4px;
-	flex-wrap: wrap
+	flex-wrap: wrap;
+	display: inline-block;
+}
+
+/*Admin menu*/
+
+input, label 
+{
+    display: block;
+}
+
+form.adminmenu_add_user_form {
+	background: LightSeaGreen;
+	padding: 1px;
+	color: black;
+	margin-top: 4px;
+	margin-right: 60%;
+	margin-left: 3px;
+	width: 85%;
+	display: flex;
+	/* justify-content: center; */
+	/* align-items: center; */
+	/* flex-direction: column; */
+	/* flex-wrap: wrap; */
+	flex-flow: row wrap;
+	border-radius: 6px;
+}
+
+input.adminmenu_add_user_form_input 
+{
+	text-align: center;
+	padding: 1px;
+	margin-bottom: 1px;
+	width: 23%;
+	height: 20px;
+	border: 1px solid #000;
+	width: 150px;
+	border-radius: 4px;
+	flex-wrap: wrap;
+	/* display: inline-block; */
+}
+
+label.adminmenu_add_user_form_label {
+	margin: 5px 10px 5px 0;
 }

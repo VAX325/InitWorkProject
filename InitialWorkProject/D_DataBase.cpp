@@ -197,85 +197,46 @@ int D_DataBase::D_UserAuthNew(const char* login, const char* pass, int * user_id
 
 size_t D_DataBase::D_GetAllUsers(D_UserData*& users)
 {
-	const char* buff = "SELECT * FROM RootDB";
-	const int colums_count = 8;
+	const char* buff = "SELECT ID FROM RootDB WHERE ID = (SELECT MAX(ID) FROM RootDB)";
 
 	SQL_RETURN_STRUCT* sql_return = (SQL_RETURN_STRUCT*)D_Exec(buff);
-	if (sql_return)
-	{
-		if (sql_return->colums <= 0)
-		{
-			return 0;
-		}
-		else
-		{
-			users = new D_UserData[sql_return->colums];
-			using size = std::vector<std::string, std::allocator<std::string>>::size_type;
 
-			size curr_user_shift = 0;
-			const int user_count = static_cast<size>((sql_return->colums / colums_count) + 1);
-			for(size i = 0; i != user_count; i++)
-			{
-				users[i] = { 0 };
-				users[i].ID = atoi(sql_return->columns_data[curr_user_shift].c_str());
-				users[i].Adm = atoi(sql_return->columns_data[curr_user_shift + 1].c_str());
-				users[i].Names = sql_return->columns_data[curr_user_shift + 2];
-				users[i].DateOfBirth = sql_return->columns_data[curr_user_shift + 3];
-				users[i].OrgName = sql_return->columns_data[curr_user_shift + 4];
-				users[i].Position = sql_return->columns_data[curr_user_shift + 5];
-				users[i].E_Mail = sql_return->columns_data[curr_user_shift + 6];
-				users[i].Login = sql_return->columns_data[curr_user_shift + 7];
-				users[i].Password = sql_return->columns_data[curr_user_shift + 8];
-				curr_user_shift += 9;
-			}
+	if (!sql_return->colums)
+		return 0;
 
-			return user_count;
-		}
-	}
-	else
+	int id = atoi(sql_return->columns_data[0].c_str()) + 1;
+
+	users = new D_UserData[id];
+
+	for (int i = 0; i != id; i++)
 	{
-		LOG(CoreToolkit::LogError) << "ERROR WHILE SEARCHG ALL USERS";
+		users[i] = D_GetUserByID(i);
 	}
 
-	return 0;
+	return id;
 }
 
 size_t D_DataBase::D_GetUsersForList(D_UserSelectData*& users)
 {
-	const char* buff = "SELECT ID, NAMES FROM RootDB";
-	const int colums_count = 2;
+	const char* buff = "SELECT ID FROM RootDB WHERE ID = (SELECT MAX(ID) FROM RootDB)";
 
 	SQL_RETURN_STRUCT* sql_return = (SQL_RETURN_STRUCT*)D_Exec(buff);
-	if (sql_return)
-	{
-		if (sql_return->colums <= 0)
-		{
-			return 0;
-		}
-		else
-		{
-			users = new D_UserSelectData[sql_return->colums];
-			using size = std::vector<std::string, std::allocator<std::string>>::size_type;
 
-			size curr_user_shift = 0;
-			const int user_count = static_cast<size>((sql_return->colums / colums_count) + 1);
-			for (size i = 0; i != user_count; i++)
-			{
-				users[i] = { 0 };
-				users[i].ID = atoi(sql_return->columns_data[curr_user_shift].c_str());
-				users[i].Names = sql_return->columns_data[curr_user_shift + 1];
-				curr_user_shift += 2;
-			}
+	if (!sql_return->colums)
+		return 0;
 
-			return user_count;
-		}
-	}
-	else
+	int id = atoi(sql_return->columns_data[0].c_str()) + 1;
+
+	users = new D_UserSelectData[id];
+
+	for (int i = 0; i != id; i++)
 	{
-		LOG(CoreToolkit::LogError) << "ERROR WHILE SEARCHG ALL USERS";
+		auto user = D_GetUserByID(i);
+		users[i].ID = user.ID;
+		users[i].Names = user.Names;
 	}
 
-	return 0;
+	return id;
 }
 
 D_UserData D_DataBase::D_GetUserByID(int id)
@@ -335,4 +296,33 @@ void D_DataBase::D_ChangeUserDataById(int id, std::vector<std::string> user_data
 	{
 
 	}
+}
+
+void D_DataBase::D_AddUser(D_UserData data)
+{
+	const char* buff = "SELECT ID FROM RootDB WHERE ID = (SELECT MAX(ID) FROM RootDB)";
+
+	SQL_RETURN_STRUCT* sql_return = (SQL_RETURN_STRUCT*)D_Exec(buff);
+
+	if (!sql_return->colums)
+		return;
+
+	int id = atoi(sql_return->columns_data[0].c_str()) + 1;
+
+	const char* buff2 = "INSERT INTO RootDB (ID, ADM, NAMES, DOB, ORGNAME, POS, MAIL, LOG, PASS)\
+			VALUES (%i, %i, '%s', '%s', '%s', '%s', '%s', '%s', '%s')\
+			";
+
+	const char* res = format(buff2, 
+		id, 
+		data.Adm ? 1 : 0, 
+		data.Names.c_str(), 
+		data.DateOfBirth.c_str(), 
+		data.OrgName.c_str(), 
+		data.Position.c_str(), 
+		data.E_Mail.c_str(), 
+		data.Login.c_str(), 
+		data.Password.c_str());
+
+	D_Exec(res);
 }

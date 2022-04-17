@@ -36,6 +36,8 @@ private:
 	void ConstructJobQuit(WebToolkit::HttpServerContext* context);
 
 	void GetRequest(WebToolkit::HttpServerContext* context);
+
+	void PushUser(WebToolkit::HttpServerContext* context);
 };
 
 #endif

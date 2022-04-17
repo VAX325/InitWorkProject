@@ -55,6 +55,8 @@ public:
 	D_UserData D_GetUserByID(int id);
 
 	void D_ChangeUserDataById(int id, std::vector<std::string> user_data);
+
+	void D_AddUser(D_UserData data);
 private:
 	static D_DataBase* D_database;
 	
