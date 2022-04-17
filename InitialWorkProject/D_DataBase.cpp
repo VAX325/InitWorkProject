@@ -20,6 +20,8 @@ struct SQL_RETURN_STRUCT
 	std::vector<std::string> columns_result;
 };
 
+static D_UserData NullPtrUser = D_UserData();
+
 D_DataBase::D_DataBase()
 {
 	D_InnerData = new D_DataBase_Internal();
@@ -36,6 +38,8 @@ D_DataBase::D_DataBase()
 
 	struct_mapping::reg(&D_UserSelectData::ID, "id");
 	struct_mapping::reg(&D_UserSelectData::Names, "names");
+
+	NullPtrUser.ID = -228;
 }
 
 D_DataBase::~D_DataBase()
@@ -210,7 +214,8 @@ size_t D_DataBase::D_GetAllUsers(D_UserData*& users)
 
 	for (int i = 0; i != id; i++)
 	{
-		users[i] = D_GetUserByID(i);
+		auto user = D_GetUserByID(i);
+		users[i] = user;
 	}
 
 	return id;
@@ -232,6 +237,9 @@ size_t D_DataBase::D_GetUsersForList(D_UserSelectData*& users)
 	for (int i = 0; i != id; i++)
 	{
 		auto user = D_GetUserByID(i);
+		if (user.ID == NullPtrUser.ID)
+			continue;
+
 		users[i].ID = user.ID;
 		users[i].Names = user.Names;
 	}
@@ -250,7 +258,7 @@ D_UserData D_DataBase::D_GetUserByID(int id)
 	{
 		if (sql_return->colums <= 0)
 		{
-			return D_UserData();
+			return NullPtrUser;
 		}
 		else
 		{
@@ -269,7 +277,7 @@ D_UserData D_DataBase::D_GetUserByID(int id)
 		}
 	}
 
-	return D_UserData();
+	return NullPtrUser;
 }
 
 void D_DataBase::D_ChangeUserDataById(int id, std::vector<std::string> user_data)

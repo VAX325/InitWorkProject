@@ -223,6 +223,9 @@ void W_WebServer::Index(WebToolkit::HttpServerContext* context)
 					std::string TheGreatBuffer = "{\"users\": [\n";
 					for (int i = 0; i != users_count; i++)
 					{
+						if (users[i].ID == -228)
+							continue;
+
 						if (i > 0)
 						{
 							TheGreatBuffer += ",\n";
