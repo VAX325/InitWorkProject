@@ -15,7 +15,7 @@ W_WebServer::W_WebServer()
 
 	dispatcher.AddMapping("/login", HttpGet, new HttpHandlerConnector<W_WebServer>(this, &W_WebServer::Login), true);
 	dispatcher.AddMapping("/index", HttpGet, new HttpHandlerConnector<W_WebServer>(this, &W_WebServer::Index), true);
-	dispatcher.AddMapping("/logout", HttpPost, new HttpHandlerConnector<W_WebServer>(this, &W_WebServer::LogOut), true);
+	dispatcher.AddMapping("/logout", HttpGet, new HttpHandlerConnector<W_WebServer>(this, &W_WebServer::LogOut), true);
 	dispatcher.AddMapping("/change_data", HttpPost, new HttpHandlerConnector<W_WebServer>(this, &W_WebServer::ChangeData), true);
 
 	dispatcher.AddMapping("/construct_full_rest", HttpPost, new HttpHandlerConnector<W_WebServer>(this, &W_WebServer::ConstructFullRest), true);

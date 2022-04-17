@@ -52,7 +52,7 @@
 
 			<p>Сокращенное ФИО</p><input class="rest_full_input" type="text" id="requests-rest-full-short-names" name="short_names" />
 
-			<span class="validity"></span>
+			<!--<span class="validity"></span>-->
 			<input class="rest_full_input" id="requests-rest-full-push" type="button" onclick="SendFullRestRequest()" value="Заполнить и скачать">
 		</form>
 
@@ -68,7 +68,7 @@
 
 			<p>Сокращенное ФИО</p><input class="rest_lite_input" type="text" id="requests-rest-lite-short-names" name="short_names"  />
 
-			<span class="validity"></span>
+			<!--<span class="validity"></span>-->
 			<input class="rest_lite_input" id="requests-rest-lite-push" type="button" onclick="SendLiteRestRequest()" value="Заполнить и скачать">
 		</form>
 
@@ -82,7 +82,7 @@
 
 			<p>Сокращенное ФИО</p><input class="job_quit_input" type="text" id="requests-job-quit-short-names" name="short_names"  />
 
-			<span class="validity"></span>
+			<!--<span class="validity"></span>-->
 			<input class="job_quit_input" id="requests-job-quit-push" type="button" onclick="SendJobQuitRequest()" value="Заполнить и скачать">
 		</form>
 	</div>
@@ -298,7 +298,8 @@
 
 		const quitButton = document.getElementById("quitButton")
 		quitButton.addEventListener("click", () => {
-			httpPostAsync("/logout", null, null, null)
+			//httpGetAsync("/logout", null)
+            window.location.href = window.origin.concat('', '/logout')
 		})
 
 		showRequests.addEventListener("click", () => {

@@ -25,7 +25,6 @@ div.requests_coise_form {
 	padding: 5px;
 	display: block;
 	width: 100%;
-	//justify-content: center;
 }
 
 
@@ -36,7 +35,7 @@ form.requests_rest_full {
 	color: black;
 	margin-right: auto;
 	margin-left: auto;
-	width: 100%;
+	width: 99%;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -47,21 +46,10 @@ input.rest_full_input {
 	text-align: center;
 	padding: 3px;
 	margin-bottom: 1px;
-	//margin-left: 40%;
 	width: 23%;
 	height: 20px;
 	border: 1px solid #000;
 	width: 150px;
-}
-
-input:invalid + span:after {
-	content: '✖';
-	padding-left: 5px;
-}
-
-input:valid + span:after {
-	content: '✓';
-	padding-left: 5px;
 }
 
 form.settings_form {
@@ -70,7 +58,7 @@ form.settings_form {
 	color: black;
 	margin-right: auto;
 	margin-left: auto;
-	width: 100%;
+	width: 99%;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -81,7 +69,6 @@ input.settings_form_input {
 	text-align: center;
 	padding: 3px;
 	margin-bottom: 1px;
-	//margin-left: 40%;
 	width: 23%;
 	height: 25px;
 	border: 1px solid #000;
