@@ -326,3 +326,8 @@ void D_DataBase::D_AddUser(D_UserData data)
 
 	D_Exec(res);
 }
+
+void D_DataBase::D_DeleteUser(int id)
+{
+	D_Exec(format("DELETE FROM RootDB WHERE ID = %i", id));
+}

@@ -408,6 +408,11 @@
 			admnenu_tbody.appendChild(row);
 		}
 
+		function ReloadCallback()
+		{
+            httpGetAsync(window.location.href.concat('', '?GTUSRDATA=true'), OnGetUsersData)
+		}
+
 		function CreateUser(user) {
 			const row = document.createElement("tr");
 
@@ -420,6 +425,7 @@
 			const cell7 = document.createElement("td");
 			const cell8 = document.createElement("td");
 			const cell9 = document.createElement("td");
+			const cell10 = document.createElement("button");
 
 			cell1.innerHTML = user.id;
 			cell2.innerHTML = user.adm;
@@ -431,6 +437,13 @@
 			cell8.innerHTML = user.login;
 			cell9.innerHTML = user.pass;
 
+			cell10.textContent = "Delete user"
+			cell10.value = "Delete user";
+            cell10.addEventListener("click", () => {
+				//Delete function
+				httpGetAsync(window.location.href.concat('', '?DELETEUSER=' + user.id), ReloadCallback)
+            })
+
 			row.appendChild(cell1);
 			row.appendChild(cell2);
 			row.appendChild(cell3);
@@ -440,6 +453,7 @@
 			row.appendChild(cell7);
 			row.appendChild(cell8);
 			row.appendChild(cell9);
+			row.appendChild(cell10);
 
 			admnenu_tbody.appendChild(row);
 		}

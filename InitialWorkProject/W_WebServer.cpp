@@ -272,6 +272,17 @@ void W_WebServer::Index(WebToolkit::HttpServerContext* context)
 				}
 
 			}
+			//Delete user
+			{
+				auto it = context->parameters.find("DELETEUSER");
+				if (it != context->parameters.end())
+				{
+					int id = atoi(it->second.c_str());
+					D_DataBase::DataBase()->D_DeleteUser(id);
+
+					return;
+				}
+			}
 		}
 
 		//Get concrete user data
