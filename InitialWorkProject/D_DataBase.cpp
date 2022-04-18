@@ -82,14 +82,14 @@ bool D_DataBase::D_Open(const char* db_name)
 		//Create admin
 		D_Exec(
 			"INSERT INTO RootDB (ID, ADM, NAMES, DOB, ORGNAME, POS, MAIL, LOG, PASS)\
-			VALUES (0, 1, 'ADMIN ADMIN ADMIN', 'ADMIN', 'Satelite Softlabs', 'SYS ADM', 'ADMIN', 'admin', 'admin')\
+			VALUES (0, 1, 'ADMIN ADMIN ADMIN', '2022-04-18', 'Satelite Softlabs', 'SYS ADM', 'ADMIN', 'admin', 'admin')\
 			"
 		);
 
 		//Create test
 		D_Exec(
 			"INSERT INTO RootDB (ID, ADM, NAMES, DOB, ORGNAME, POS, MAIL, LOG, PASS)\
-			VALUES (1, 0, 'TEST TEST TEST', 'TEST', 'Satelite Softlabs', 'SYS TST', 'TEST', 'test', 'test')\
+			VALUES (1, 0, 'TEST TEST TEST', '2022-04-18', 'Satelite Softlabs', 'SYS TST', 'TEST', 'test', 'test')\
 			"
 		);
 	}
